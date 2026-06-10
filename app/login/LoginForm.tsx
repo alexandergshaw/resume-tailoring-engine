@@ -15,7 +15,7 @@ export default function LoginForm() {
     setPending(true);
     try {
       const supabase = getSupabaseBrowserClient();
-      const emailRedirectTo = `${window.location.origin}/auth/callback?next=/tailoring-runs`;
+      const emailRedirectTo = `${window.location.origin}/auth/callback`;
       const { error: signInError } = await supabase.auth.signInWithOtp({
         email: email.trim(),
         options: { emailRedirectTo },
