@@ -35,7 +35,14 @@ export async function submitTailoringRun(_prev: SubmitState, formData: FormData)
     });
     return { runId: run.id, status: run.status };
   } catch (error) {
-    return { error: error instanceof Error ? error.message : 'Failed to queue run.' };
+    console.error('submitTailoringRun failed', error);
+    const message =
+      error instanceof Error
+        ? error.message
+        : typeof error === 'object' && error !== null
+          ? JSON.stringify(error)
+          : 'Failed to queue run.';
+    return { error: message };
   }
 }
 
