@@ -1,0 +1,32 @@
+{
+  "name": "resume-tailoring-engine",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint",
+    "test": "vitest run",
+    "worker:tailoring": "tsx workers/processTailoringRuns.ts"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.108.1",
+    "docxtemplater": "^3.68.7",
+    "mammoth": "^1.12.0",
+    "next": "16.2.9",
+    "pizzip": "^3.2.0",
+    "react": "19.2.4",
+    "react-dom": "19.2.4"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.2.9",
+    "tsx": "^4.22.4",
+    "typescript": "^5",
+    "vitest": "^4.1.8"
+  }
+}
