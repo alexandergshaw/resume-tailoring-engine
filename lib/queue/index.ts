@@ -64,6 +64,22 @@ export async function listQueuedRuns(limit = 10): Promise<TailoringRunRecord[]> 
   return (data as TailoringRunRecord[]) ?? [];
 }
 
+export async function listRuns(limit = 20): Promise<TailoringRunRecord[]> {
+  const supabase = getSupabaseServiceClient();
+  if (!supabase) {
+    return [...inMemoryDb.runs.values()]
+      .sort((a, b) => b.created_at.localeCompare(a.created_at))
+      .slice(0, limit);
+  }
+
+  const { data } = await supabase
+    .from('tailoring_runs')
+    .select('*')
+    .order('created_at', { ascending: false })
+    .limit(limit);
+  return (data as TailoringRunRecord[]) ?? [];
+}
+
 export async function updateTailoringRun(id: string, updates: Partial<TailoringRunRecord>): Promise<void> {
   const supabase = getSupabaseServiceClient();
   if (!supabase) {

@@ -66,7 +66,7 @@ export default async function TailoringRunDetail({ params }: { params: Promise<{
         ) : null}
         {run.output_file_path ? (
           <p>
-            <Link href={`/api/tailoring-runs/${id}/download`}>Download DOCX</Link>
+            <Link href={`/tailoring-runs/${id}/download`}>Download DOCX</Link>
           </p>
         ) : null}
       </section>

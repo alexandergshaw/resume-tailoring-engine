@@ -2,6 +2,8 @@
 
 import { redirect } from 'next/navigation';
 import { requireAdmin } from '@/lib/auth/adminAuth';
+import { processRunById } from '@/lib/resume-tailoring/processRun';
+import { getTailoringRun } from '@/lib/queue';
 import { getSupabaseServerClient } from '@/lib/supabase/server';
 import { createTailoringRun } from '@/lib/tailoringRuns';
 
@@ -33,7 +35,13 @@ export async function submitTailoringRun(_prev: SubmitState, formData: FormData)
       jobPostingText,
       aggressiveness: `${formData.get('aggressiveness') ?? 'balanced'}`,
     });
-    return { runId: run.id, status: run.status };
+
+    // Vercel has no long-running worker, so the testing UI processes the run
+    // inline here. `processRunById` marks the run failed (never throws) on
+    // error. The external worker remains the production path for API workloads.
+    await processRunById(run.id);
+    const processed = await getTailoringRun(run.id);
+    return { runId: run.id, status: processed?.status ?? run.status };
   } catch (error) {
     console.error('submitTailoringRun failed', error);
     const message =
