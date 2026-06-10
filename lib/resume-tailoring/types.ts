@@ -50,7 +50,9 @@ export type TailoredResult = {
   matchScore: number;
   report: TailoringReport;
   selectedBullets: ScoredBullet[];
+  rejectedBullets: ScoredBullet[];
   missingSkills: string[];
+  sectionOrder: string[];
 };
 
 export type TailorResumeInput = {

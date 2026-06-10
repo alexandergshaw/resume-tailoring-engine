@@ -1,7 +1,7 @@
 import crypto from 'node:crypto';
 import { NextResponse } from 'next/server';
 import { validateApiKey } from '@/lib/auth/apiKeys';
-import { enqueueTailoringRun } from '@/lib/queue';
+import { enqueueTailoringRun, recordUsageEvent } from '@/lib/queue';
 import { AGGRESSIVENESS_LEVELS, type AggressivenessLevel } from '@/lib/resume-tailoring/types';
 import { storeBuffer } from '@/lib/storage';
 
@@ -31,6 +31,13 @@ export async function POST(request: Request) {
     job_posting_text: jobPostingText,
     job_posting_url: optionalValue(form.get('job_posting_url')),
     callback_url: optionalValue(form.get('callback_url')),
+  });
+
+  await recordUsageEvent({
+    apiClientId: auth.apiClientId,
+    tailoringRunId: run.id,
+    eventType: 'run_created',
+    metadata: { aggressiveness: run.aggressiveness, trusted_claim_expansion: run.trusted_claim_expansion },
   });
 
   return NextResponse.json({ run_id: run.id, status: run.status }, { status: 202 });

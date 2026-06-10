@@ -6,6 +6,7 @@ export function generateReport(params: {
   selectedBullets: ScoredBullet[];
   rejectedBullets: ScoredBullet[];
   expandedClaims: ClaimExpansion[];
+  sectionDecisions: Record<string, string>;
 }): TailoringReport {
   const keywordCoverage: Record<string, boolean> = {};
   for (const skill of [...params.matchedSkills, ...params.missingSkills]) {
@@ -18,11 +19,7 @@ export function generateReport(params: {
     selected_bullets: params.selectedBullets.map((bullet) => bullet.text),
     rejected_bullets: params.rejectedBullets.map((bullet) => bullet.text),
     keyword_coverage: keywordCoverage,
-    section_decisions: {
-      experience: 'prioritized by score',
-      projects: 'kept highest scoring projects',
-      skills: 'canonicalized against taxonomy',
-    },
+    section_decisions: params.sectionDecisions,
     expanded_claims: params.expandedClaims,
   };
 }

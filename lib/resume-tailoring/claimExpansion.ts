@@ -1,6 +1,27 @@
 import type { ClaimExpansion, ScoredBullet } from './types';
 
-const PROTECTED_PATTERNS = [/\b(inc|llc|corp|ltd)\b/i, /\b(20\d{2}|19\d{2})\b/, /\b(certification|degree|b\.s\.|m\.s\.|phd)\b/i];
+// Protected categories that may never be altered or fabricated by claim expansion.
+const PROTECTED_PATTERNS: Array<{ category: string; pattern: RegExp }> = [
+  // employers
+  { category: 'employer', pattern: /\b(inc|llc|corp|corporation|ltd|gmbh|co)\b/i },
+  // dates
+  { category: 'date', pattern: /\b(19\d{2}|20\d{2})\b/ },
+  { category: 'date', pattern: /\b(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\.?\s+\d{4}\b/i },
+  // certifications & degrees
+  { category: 'credential', pattern: /\b(certification|certified|certificate|degree|diploma|b\.?s\.?|m\.?s\.?|b\.?a\.?|m\.?b\.?a\.?|ph\.?d\.?|bachelor|master|doctorate)\b/i },
+  // compensation
+  { category: 'compensation', pattern: /\$\s?\d|\b(salary|compensation|wage|stipend|usd|per\s+(hour|year|annum)|annual\s+pay)\b/i },
+  // locations
+  { category: 'location', pattern: /\b[A-Z][a-zA-Z]+,\s?(?:[A-Z]{2}|[A-Z][a-z]+)\b|\b(remote|on-?site|hybrid|relocat)\w*\b/ },
+  // metrics (any numeric figure that could be a fabricated result)
+  { category: 'metric', pattern: /\d/ },
+  // work authorization
+  { category: 'work_authorization', pattern: /\b(visa|h-?1b|green\s?card|citizen|citizenship|sponsorship|work\s+authoriz\w*|authorized\s+to\s+work)\b/i },
+  // publications
+  { category: 'publication', pattern: /\b(publication|published|journal|conference\s+paper|proceedings|doi|isbn)\b/i },
+  // awards
+  { category: 'award', pattern: /\b(award|awarded|honou?r|recognition|scholarship|dean'?s\s+list|valedictorian|medal)\b/i },
+];
 
 export function claimExpansion(params: { bullets: ScoredBullet[]; jobText: string }): { bullets: ScoredBullet[]; expansions: ClaimExpansion[] } {
   const lowerJobText = params.jobText.toLowerCase();
@@ -28,7 +49,7 @@ export function claimExpansion(params: { bullets: ScoredBullet[]; jobText: strin
 }
 
 function isProtected(text: string): boolean {
-  return PROTECTED_PATTERNS.some((pattern) => pattern.test(text));
+  return PROTECTED_PATTERNS.some(({ pattern }) => pattern.test(text));
 }
 
 function replaceTerm(

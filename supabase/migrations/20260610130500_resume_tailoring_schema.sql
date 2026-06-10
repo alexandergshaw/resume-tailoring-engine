@@ -72,3 +72,21 @@ create index if not exists idx_tailoring_runs_api_client_id on tailoring_runs(ap
 create index if not exists idx_tailoring_reports_tailoring_run_id on tailoring_reports(tailoring_run_id);
 create index if not exists idx_resume_bullets_tailoring_run_id on resume_bullets(tailoring_run_id);
 create index if not exists idx_usage_events_created_at on usage_events(created_at);
+create index if not exists idx_usage_events_api_client_id on usage_events(api_client_id);
+create index if not exists idx_usage_events_tailoring_run_id on usage_events(tailoring_run_id);
+create index if not exists idx_api_clients_api_key_hash on api_clients(api_key_hash);
+create unique index if not exists idx_skill_taxonomy_canonical_name on skill_taxonomy(canonical_name);
+
+insert into skill_taxonomy (canonical_name, aliases, category)
+values
+  ('React', '["react","reactjs","react.js"]'::jsonb, 'frontend'),
+  ('Spring Boot', '["spring boot","springboot"]'::jsonb, 'backend'),
+  ('AWS', '["aws","amazon web services"]'::jsonb, 'cloud'),
+  ('Docker', '["docker","containerization"]'::jsonb, 'devops'),
+  ('Kafka', '["kafka","apache kafka"]'::jsonb, 'data'),
+  ('TypeScript', '["typescript","ts"]'::jsonb, 'language'),
+  ('JavaScript', '["javascript","js"]'::jsonb, 'language'),
+  ('Python', '["python"]'::jsonb, 'language'),
+  ('Node.js', '["node","nodejs","node.js"]'::jsonb, 'backend'),
+  ('PostgreSQL', '["postgres","postgresql"]'::jsonb, 'database')
+on conflict (canonical_name) do nothing;

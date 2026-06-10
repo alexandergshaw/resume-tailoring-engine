@@ -1,6 +1,12 @@
 import crypto from 'node:crypto';
 import { getSupabaseServiceClient } from '@/lib/supabase/client';
-import { inMemoryDb, type TailoringReportRecord, type TailoringRunRecord } from '@/lib/supabase/inMemoryDb';
+import {
+  inMemoryDb,
+  type ResumeBulletRecord,
+  type TailoringReportRecord,
+  type TailoringRunRecord,
+  type UsageEventRecord,
+} from '@/lib/supabase/inMemoryDb';
 
 export async function enqueueTailoringRun(input: Omit<TailoringRunRecord, 'id' | 'created_at' | 'updated_at' | 'completed_at' | 'status' | 'claim_expansion_used' | 'output_file_path' | 'match_score' | 'error_message'>): Promise<TailoringRunRecord> {
   const now = new Date().toISOString();
@@ -78,4 +84,51 @@ export async function storeTailoringReport(report: TailoringReportRecord): Promi
   }
 
   await supabase.from('tailoring_reports').insert(report);
+}
+
+export async function storeResumeBullets(
+  runId: string,
+  bullets: Array<Omit<ResumeBulletRecord, 'id' | 'tailoring_run_id' | 'created_at'>>,
+): Promise<void> {
+  const now = new Date().toISOString();
+  const records: ResumeBulletRecord[] = bullets.map((bullet) => ({
+    ...bullet,
+    id: crypto.randomUUID(),
+    tailoring_run_id: runId,
+    created_at: now,
+  }));
+
+  const supabase = getSupabaseServiceClient();
+  if (!supabase) {
+    inMemoryDb.resumeBullets.set(runId, records);
+    return;
+  }
+
+  if (records.length > 0) {
+    await supabase.from('resume_bullets').insert(records);
+  }
+}
+
+export async function recordUsageEvent(event: {
+  apiClientId: string | null;
+  tailoringRunId: string | null;
+  eventType: string;
+  metadata?: Record<string, unknown>;
+}): Promise<void> {
+  const record: UsageEventRecord = {
+    id: crypto.randomUUID(),
+    api_client_id: event.apiClientId,
+    tailoring_run_id: event.tailoringRunId,
+    event_type: event.eventType,
+    metadata: event.metadata ?? {},
+    created_at: new Date().toISOString(),
+  };
+
+  const supabase = getSupabaseServiceClient();
+  if (!supabase) {
+    inMemoryDb.usageEvents.push(record);
+    return;
+  }
+
+  await supabase.from('usage_events').insert(record);
 }

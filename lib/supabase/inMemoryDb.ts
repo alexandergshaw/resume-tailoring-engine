@@ -39,12 +39,64 @@ export type ApiClientRecord = {
   is_active: boolean;
 };
 
+export type ResumeBulletRecord = {
+  id: string;
+  tailoring_run_id: string;
+  text: string;
+  section: string;
+  detected_skills: string[];
+  score: number;
+  selected: boolean;
+  created_at: string;
+};
+
+export type SkillTaxonomyRecord = {
+  id: string;
+  canonical_name: string;
+  aliases: string[];
+  category: string;
+  created_at: string;
+};
+
+export type UsageEventRecord = {
+  id: string;
+  api_client_id: string | null;
+  tailoring_run_id: string | null;
+  event_type: string;
+  metadata: Record<string, unknown>;
+  created_at: string;
+};
+
+const SEED_SKILL_TAXONOMY: Array<Pick<SkillTaxonomyRecord, 'canonical_name' | 'aliases' | 'category'>> = [
+  { canonical_name: 'React', aliases: ['react', 'reactjs', 'react.js'], category: 'frontend' },
+  { canonical_name: 'Spring Boot', aliases: ['spring boot', 'springboot'], category: 'backend' },
+  { canonical_name: 'AWS', aliases: ['aws', 'amazon web services'], category: 'cloud' },
+  { canonical_name: 'Docker', aliases: ['docker', 'containerization'], category: 'devops' },
+  { canonical_name: 'Kafka', aliases: ['kafka', 'apache kafka'], category: 'data' },
+  { canonical_name: 'TypeScript', aliases: ['typescript', 'ts'], category: 'language' },
+  { canonical_name: 'JavaScript', aliases: ['javascript', 'js'], category: 'language' },
+  { canonical_name: 'Python', aliases: ['python'], category: 'language' },
+  { canonical_name: 'Node.js', aliases: ['node', 'nodejs', 'node.js'], category: 'backend' },
+  { canonical_name: 'PostgreSQL', aliases: ['postgres', 'postgresql'], category: 'database' },
+];
+
 const runs = new Map<string, TailoringRunRecord>();
 const reports = new Map<string, TailoringReportRecord>();
 const apiClients = new Map<string, ApiClientRecord>();
+const resumeBullets = new Map<string, ResumeBulletRecord[]>();
+const skillTaxonomy = new Map<string, SkillTaxonomyRecord>();
+const usageEvents: UsageEventRecord[] = [];
+
+for (const [index, entry] of SEED_SKILL_TAXONOMY.entries()) {
+  const id = `seed-skill-${index}`;
+  skillTaxonomy.set(id, { id, created_at: new Date(0).toISOString(), ...entry });
+}
 
 export const inMemoryDb = {
   runs,
   reports,
   apiClients,
+  resumeBullets,
+  skillTaxonomy,
+  usageEvents,
 };
