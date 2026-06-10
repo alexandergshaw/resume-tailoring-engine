@@ -19,10 +19,9 @@ const DEFAULT_SECTION_ORDER = ['summary', 'skills', 'experience', 'projects', 'e
 type InPlaceInput = {
   doc: DocxDocument;
   selected: ScoredBullet[];
-  rejected: ScoredBullet[];
   summaryText?: string;
   summaryBlockId?: number;
-  skillsText?: string;
+  appendSkills?: string[];
   skillsBlockId?: number;
 };
 
@@ -32,15 +31,14 @@ type InPlaceInput = {
  * (fonts, headings, bullet/number styles, spacing, tables) because the original
  * OOXML parts are kept verbatim and only paragraph text is mutated.
  *
- * Note: section-level reordering is intentionally NOT applied here. Moving whole
- * heading+content groups in place is high-risk for layout fidelity, and the goal
- * is strict adherence to the original formatting. Bullets are still reordered
- * within their section and low-relevance bullets removed.
+ * Tailoring is strictly additive: no paragraph is ever removed or reordered.
+ * Only the text within existing paragraphs is enriched with job-posting
+ * terminology, so the candidate's full history and the document layout survive.
  */
 export function renderInPlace(input: InPlaceInput): Buffer {
   const { doc } = input;
 
-  // 1. Update rewritten bullet text (e.g. claim expansion) in place.
+  // 1. Update enriched bullet text (keyword insertion / terminology) in place.
   for (const bullet of input.selected) {
     if (bullet.sourceBlockId === undefined) continue;
     if (doc.getText(bullet.sourceBlockId) !== bullet.text) {
@@ -48,29 +46,17 @@ export function renderInPlace(input: InPlaceInput): Buffer {
     }
   }
 
-  // 2. Remove dropped (rejected) bullets.
-  for (const bullet of input.rejected) {
-    if (bullet.sourceBlockId !== undefined) {
-      doc.remove(bullet.sourceBlockId);
-    }
-  }
-
-  // 3. Reorder retained bullets within each section (by their selected order).
-  for (const section of ['experience', 'projects']) {
-    const orderedIds = input.selected
-      .filter((bullet) => bullet.section === section && bullet.sourceBlockId !== undefined)
-      .map((bullet) => bullet.sourceBlockId as number);
-    if (orderedIds.length > 1) {
-      doc.reorder(orderedIds);
-    }
-  }
-
-  // 4. Optionally rewrite summary / skills text in their original paragraphs.
+  // 2. Optionally rewrite the summary paragraph (enriched, never the header).
   if (input.summaryText !== undefined && input.summaryBlockId !== undefined) {
     doc.setText(input.summaryBlockId, input.summaryText);
   }
-  if (input.skillsText !== undefined && input.skillsBlockId !== undefined) {
-    doc.setText(input.skillsBlockId, input.skillsText);
+
+  // 3. Append job-posting skills to the existing skills paragraph, preserving
+  //    the original skills and their formatting.
+  if (input.appendSkills && input.appendSkills.length > 0 && input.skillsBlockId !== undefined) {
+    const existing = doc.getText(input.skillsBlockId).trim();
+    const merged = existing ? `${existing}, ${input.appendSkills.join(', ')}` : input.appendSkills.join(', ');
+    doc.setText(input.skillsBlockId, merged);
   }
 
   return doc.toBuffer();

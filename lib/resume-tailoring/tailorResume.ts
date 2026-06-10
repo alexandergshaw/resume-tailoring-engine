@@ -1,45 +1,59 @@
 import { AGGRESSIVENESS_CONFIG, type AggressivenessConfig } from './aggressiveness';
-import { claimExpansion } from './claimExpansion';
+import { enrichContent } from './claimExpansion';
 import { extractSkills } from './extractSkills';
 import { generateReport } from './generateReport';
 import { parseJob } from './parseJob';
 import { parseResume } from './parseResume';
 import { renderDocx, renderInPlace } from './renderDocx';
 import { scoreContent } from './scoreContent';
-import type { ScoredBullet, TailorResumeInput, TailoredResult } from './types';
+import type { TailorResumeInput, TailoredResult } from './types';
 
-const DEFAULT_SECTION_ORDER = ['summary', 'skills', 'experience', 'projects', 'education'];
-const REORDERED_SECTION_ORDER = ['skills', 'experience', 'projects', 'summary', 'education'];
+// Tailoring never reorders sections; the original document order is preserved.
+const SECTION_ORDER = ['summary', 'skills', 'experience', 'projects', 'education'];
 
 export async function tailorResume(input: TailorResumeInput): Promise<TailoredResult> {
   const aggressiveness = input.aggressiveness ?? 'balanced';
   const parsedResume = await parseResume({ buffer: input.resumeBuffer, filename: input.resumeFilename });
   const parsedJob = parseJob(input.jobPostingText);
-  const scored = scoreContent(parsedResume.bullets, parsedJob);
   const config = AGGRESSIVENESS_CONFIG[aggressiveness];
 
-  const selected = applyAggressiveness(scored, config);
-  const rejected = scored.filter((bullet) => !selected.includes(bullet));
+  // Score bullets for enrichment targeting only — nothing is removed or reordered.
+  const scored = scoreContent(parsedResume.bullets, parsedJob);
 
-  const effectiveMaxExpansion = aggressiveness === 'max' && input.trustedClaimExpansion === true;
-  const expansionResult = effectiveMaxExpansion
-    ? claimExpansion({ bullets: selected, jobText: input.jobPostingText })
-    : { bullets: selected, expansions: [] };
+  // Additive keyword enrichment: weave posting terminology into existing bullets.
+  const enriched = enrichContent({
+    bullets: scored,
+    parsedJob,
+    resumeText: parsedResume.rawText,
+    config: {
+      substituteTerminology: config.substituteTerminology,
+      augmentBullets: config.augmentBullets,
+      augmentTitlesAndProjects: config.augmentTitlesAndProjects,
+      maxInsertionsPerBullet: config.maxInsertionsPerBullet,
+    },
+  });
 
-  const matchedSkills = extractSkills(expansionResult.bullets.map((bullet) => bullet.text).join(' '));
   const requiredSkills = parsedJob.requiredSkills;
-  const matchedRequiredSkills = requiredSkills.filter((skill) => matchedSkills.includes(skill));
+  const resumeSkills = extractSkills(parsedResume.rawText);
+  const matchedRequiredSkills = requiredSkills.filter((skill) => resumeSkills.includes(skill));
   const missingSkills = requiredSkills.filter((skill) => !matchedRequiredSkills.includes(skill));
   const matchScore = requiredSkills.length === 0 ? 0 : Math.round((matchedRequiredSkills.length / requiredSkills.length) * 100);
 
-  const orderedSkills = config.reorderSkills ? prioritizeSkills(matchedSkills, requiredSkills) : matchedSkills;
+  // Skills section additions: posting skills supported by the resume's content
+  // but not yet listed in the skills section. Existing skills are never dropped.
+  const existingSkillsText = (parsedResume.sections.skills ?? []).join(' ');
+  const existingSkills = extractSkills(existingSkillsText);
+  const postingSkills = uniq([...requiredSkills, ...parsedJob.preferredSkills, ...parsedJob.tools]);
+  const appendSkills = config.appendSkills
+    ? postingSkills.filter((skill) => resumeSkills.includes(skill) && !existingSkills.includes(skill))
+    : [];
 
-  const experienceBullets = expansionResult.bullets.filter((bullet) => bullet.section === 'experience').map((bullet) => bullet.text);
-  const projectBullets = expansionResult.bullets.filter((bullet) => bullet.section === 'projects');
-  const orderedProjects = (config.projectSwaps ? [...projectBullets].sort((a, b) => b.score - a.score) : projectBullets).map((bullet) => bullet.text);
+  const allSkills = uniq([...existingSkills, ...appendSkills]);
 
-  const summary = buildSummary(parsedResume.sections.summary?.join(' ').trim() ?? '', config.summaryStrategy, orderedSkills);
-  const sectionOrder = config.reorderSections ? REORDERED_SECTION_ORDER : DEFAULT_SECTION_ORDER;
+  const experienceBullets = enriched.bullets.filter((bullet) => bullet.section === 'experience').map((bullet) => bullet.text);
+  const projectBullets = enriched.bullets.filter((bullet) => bullet.section === 'projects').map((bullet) => bullet.text);
+
+  const summary = buildSummary(parsedResume.sections.summary?.join(' ').trim() ?? '', config.summaryStrategy, allSkills);
 
   let outputBuffer: Buffer;
   if (parsedResume.docx) {
@@ -51,33 +65,32 @@ export async function tailorResume(input: TailorResumeInput): Promise<TailoredRe
     const skillsBlockId = sectionBlocks.skills?.[0];
     outputBuffer = renderInPlace({
       doc: parsedResume.docx,
-      selected: expansionResult.bullets,
-      rejected,
+      selected: enriched.bullets,
       summaryText: config.summaryStrategy !== 'preserve' && summaryBlockId !== undefined ? summary : undefined,
       summaryBlockId,
-      skillsText: config.reorderSkills && skillsBlockId !== undefined ? orderedSkills.join(', ') : undefined,
+      appendSkills: skillsBlockId !== undefined ? appendSkills : [],
       skillsBlockId,
     });
   } else {
     outputBuffer = renderDocx({
       header: parsedResume.sections.header ?? [],
       summary,
-      skills: orderedSkills,
+      skills: allSkills,
       experienceBullets,
-      projects: orderedProjects,
+      projects: projectBullets,
       education: parsedResume.sections.education?.join(' ').trim() ?? '',
-      sectionOrder,
+      sectionOrder: SECTION_ORDER,
     });
   }
 
-  const sectionDecisions = buildSectionDecisions(config, rejected.length);
+  const sectionDecisions = buildSectionDecisions(config, enriched.expansions.length, appendSkills);
 
   const report = generateReport({
-    matchedSkills: orderedSkills,
+    matchedSkills: allSkills,
     missingSkills,
-    selectedBullets: expansionResult.bullets,
-    rejectedBullets: rejected,
-    expandedClaims: expansionResult.expansions,
+    selectedBullets: enriched.bullets,
+    rejectedBullets: [],
+    expandedClaims: enriched.expansions,
     sectionDecisions,
   });
 
@@ -85,25 +98,15 @@ export async function tailorResume(input: TailorResumeInput): Promise<TailoredRe
     outputBuffer,
     matchScore,
     report,
-    selectedBullets: expansionResult.bullets,
-    rejectedBullets: rejected,
+    selectedBullets: enriched.bullets,
+    rejectedBullets: [],
     missingSkills,
-    sectionOrder,
+    sectionOrder: SECTION_ORDER,
   };
 }
 
-export function applyAggressiveness(scored: ScoredBullet[], config: AggressivenessConfig): ScoredBullet[] {
-  const ordered = config.reorderBullets ? [...scored].sort((a, b) => b.score - a.score) : [...scored];
-  const filtered = config.removeLowRelevanceBullets ? ordered.filter((bullet) => bullet.score >= config.minBulletScore) : ordered;
-  const source = filtered.length > 0 ? filtered : ordered;
-  const maxKeep = Math.max(1, Math.ceil(source.length * (1 - config.maxChangeRatio)));
-  return source.slice(0, Math.max(maxKeep, 1));
-}
-
-function prioritizeSkills(skills: string[], requiredSkills: string[]): string[] {
-  const required = skills.filter((skill) => requiredSkills.includes(skill));
-  const rest = skills.filter((skill) => !requiredSkills.includes(skill));
-  return [...required, ...rest];
+function uniq(values: string[]): string[] {
+  return [...new Set(values)];
 }
 
 function buildSummary(summary: string, strategy: AggressivenessConfig['summaryStrategy'], skills: string[]): string {
@@ -118,13 +121,23 @@ function buildSummary(summary: string, strategy: AggressivenessConfig['summarySt
   return summary ? `${lead} ${summary}` : lead;
 }
 
-function buildSectionDecisions(config: AggressivenessConfig, removedCount: number): Record<string, string> {
+function buildSectionDecisions(
+  config: AggressivenessConfig,
+  insertionCount: number,
+  appendedSkills: string[],
+): Record<string, string> {
   return {
-    sections: config.reorderSections ? 'reordered to lead with skills and experience' : 'original section order preserved',
-    bullets: config.reorderBullets ? 'reordered by relevance score' : 'original bullet order preserved',
-    bullets_removed: config.removeLowRelevanceBullets ? `${removedCount} low-relevance bullet(s) removed` : 'no bullets removed',
-    projects: config.projectSwaps ? 'projects reordered by relevance score' : 'original project order preserved',
-    skills: config.reorderSkills ? 'job-required skills prioritized' : 'skills canonicalized against taxonomy',
+    sections: 'all sections preserved; no content removed or reordered',
+    bullets: config.augmentBullets
+      ? `${insertionCount} keyword insertion(s)/substitution(s) woven into existing bullets`
+      : 'bullets preserved; terminology substitutions only',
+    projects: config.augmentTitlesAndProjects
+      ? 'project entries enriched with posting keywords'
+      : 'projects preserved unchanged',
+    skills:
+      appendedSkills.length > 0
+        ? `appended supported posting skills: ${appendedSkills.join(', ')}`
+        : 'no skills appended; existing skills preserved',
     summary: `summary strategy: ${config.summaryStrategy}`,
   };
 }

@@ -1,4 +1,4 @@
-import type { ClaimExpansion, ScoredBullet } from './types';
+import type { ClaimExpansion, ParsedJob, ScoredBullet } from './types';
 
 // Protected categories that may never be altered or fabricated by claim expansion.
 const PROTECTED_PATTERNS: Array<{ category: string; pattern: RegExp }> = [
@@ -50,6 +50,92 @@ export function claimExpansion(params: { bullets: ScoredBullet[]; jobText: strin
 
 function isProtected(text: string): boolean {
   return PROTECTED_PATTERNS.some(({ pattern }) => pattern.test(text));
+}
+
+export type EnrichConfig = {
+  substituteTerminology: boolean;
+  augmentBullets: boolean;
+  augmentTitlesAndProjects: boolean;
+  maxInsertionsPerBullet: number;
+};
+
+/**
+ * Additive keyword enrichment: weaves job-posting terminology into existing
+ * resume bullets WITHOUT removing or reordering anything. Bullets are returned
+ * in their original order; only their text may be augmented. Protected claims
+ * (employers, dates, metrics, credentials, compensation, etc.) are never
+ * altered, and insertions are additive qualifiers — they never fabricate
+ * quantified results, titles held, employers, or credentials.
+ */
+export function enrichContent(params: {
+  bullets: ScoredBullet[];
+  parsedJob: ParsedJob;
+  resumeText: string;
+  config: EnrichConfig;
+}): { bullets: ScoredBullet[]; expansions: ClaimExpansion[] } {
+  const { config, parsedJob } = params;
+  const expansions: ClaimExpansion[] = [];
+
+  // Keywords the posting wants that the resume does not already mention anywhere.
+  const lowerResume = params.resumeText.toLowerCase();
+  const missingKeywords = uniq([
+    ...parsedJob.requiredSkills,
+    ...parsedJob.preferredSkills,
+    ...parsedJob.tools,
+  ]).filter((keyword) => keyword && !lowerResume.includes(keyword.toLowerCase()));
+
+  const eligibleSections = config.augmentTitlesAndProjects
+    ? ['experience', 'projects']
+    : config.augmentBullets
+      ? ['experience']
+      : [];
+
+  // Deterministic round-robin: rank eligible, non-protected bullets by score so
+  // the strongest bullets receive keywords first, but emit results in original
+  // order so the document is never reordered.
+  const queue = [...missingKeywords];
+  const targetIds = new Set(
+    [...params.bullets]
+      .map((bullet, index) => ({ bullet, index }))
+      .filter(({ bullet }) => eligibleSections.includes(bullet.section) && !isProtected(bullet.text))
+      .sort((a, b) => b.bullet.score - a.bullet.score)
+      .map(({ index }) => index),
+  );
+
+  const bullets = params.bullets.map((bullet, index) => {
+    if (isProtected(bullet.text)) {
+      return bullet;
+    }
+
+    let next = bullet.text;
+
+    if (config.substituteTerminology) {
+      next = replaceTerm(next, /\bdeveloper\b/gi, 'software engineer', 'job_title', expansions);
+      next = replaceTerm(next, /\bbuilt\b/gi, 'designed and delivered', 'job_duty', expansions);
+    }
+
+    if (targetIds.has(index) && config.maxInsertionsPerBullet > 0 && queue.length > 0) {
+      const take = queue.splice(0, config.maxInsertionsPerBullet);
+      if (take.length > 0) {
+        const original = next;
+        next = `${next}; leveraging ${take.join(', ')}`;
+        expansions.push({
+          claim_type: 'skill',
+          original_text: original,
+          expanded_text: next,
+          basis: `Aligned with target role keywords: ${take.join(', ')}.`,
+        });
+      }
+    }
+
+    return next === bullet.text ? bullet : { ...bullet, text: next };
+  });
+
+  return { bullets, expansions };
+}
+
+function uniq(values: string[]): string[] {
+  return [...new Set(values)];
 }
 
 function replaceTerm(

@@ -36,8 +36,7 @@ export function scoreContent(bullets: ResumeBullet[], job: ParsedJob): ScoredBul
 
       seen.add(lower);
       return { ...bullet, score, reasons };
-    })
-    .sort((a, b) => b.score - a.score);
+    });
 }
 
 function tokenOverlap(reference: string, target: string): boolean {
