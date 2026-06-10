@@ -3,7 +3,33 @@ import { DocxDocument } from './docxEditor';
 import { extractSkills } from './extractSkills';
 import type { ParsedResume, ResumeBullet } from './types';
 
-const SECTION_HEADERS = ['summary', 'skills', 'experience', 'projects', 'education', 'certifications'];
+// Heading text (lower-cased) → canonical section key. Lets "Profile"/"Objective"
+// map to the summary section without absorbing the document header.
+const SECTION_HEADER_ALIASES: Record<string, string> = {
+  summary: 'summary',
+  profile: 'summary',
+  objective: 'summary',
+  'professional summary': 'summary',
+  skills: 'skills',
+  'technical skills': 'skills',
+  experience: 'experience',
+  'work experience': 'experience',
+  'professional experience': 'experience',
+  projects: 'projects',
+  education: 'education',
+  certifications: 'certifications',
+};
+
+// Everything before the first recognized section heading (name, contact info,
+// links) lives in this region. It is never rewritten, reordered, or merged into
+// the summary.
+const HEADER_SECTION = 'header';
+
+function resolveSectionKey(line: string): string | null {
+  const maybe = line.trim().toLowerCase().replace(/:$/, '');
+  if (!maybe) return null;
+  return SECTION_HEADER_ALIASES[maybe] ?? null;
+}
 
 export async function parseResume(input: { buffer: Buffer; filename: string }): Promise<ParsedResume> {
   if (input.filename.toLowerCase().endsWith('.docx')) {
@@ -18,6 +44,7 @@ export async function parseResume(input: { buffer: Buffer; filename: string }): 
   const bullets: ResumeBullet[] = [];
 
   for (const [section, lines] of Object.entries(sections)) {
+    if (section === HEADER_SECTION) continue;
     for (const line of lines) {
       if (!line.trim()) continue;
       const normalized = line.replace(/^[-*•]\s*/, '').trim();
@@ -43,13 +70,15 @@ function parseFromDocx(doc: DocxDocument): ParsedResume {
   const sections: Record<string, string[]> = {};
   const sectionBlocks: Record<string, number[]> = {};
   const bullets: ResumeBullet[] = [];
-  let current = 'summary';
+  // Start in the header region so the name/contact block is never treated as
+  // summary content.
+  let current = HEADER_SECTION;
 
   for (const paragraph of paragraphs) {
     const line = paragraph.text;
-    const maybe = line.trim().toLowerCase().replace(/:$/, '');
-    if (SECTION_HEADERS.includes(maybe)) {
-      current = maybe;
+    const resolved = resolveSectionKey(line);
+    if (resolved) {
+      current = resolved;
       sections[current] ??= [];
       sectionBlocks[current] ??= [];
       continue;
@@ -61,6 +90,8 @@ function parseFromDocx(doc: DocxDocument): ParsedResume {
     if (line.trim()) {
       sections[current].push(line.trim());
     }
+
+    if (current === HEADER_SECTION) continue;
 
     const normalized = line.replace(/^[-*•]\s*/, '').trim();
     if (normalized && (line.match(/^[-*•]\s+/) || current === 'experience' || current === 'projects')) {
@@ -89,12 +120,13 @@ async function readResumeText(buffer: Buffer, filename: string): Promise<string>
 function splitSections(rawText: string): Record<string, string[]> {
   const lines = rawText.split(/\r?\n/);
   const output: Record<string, string[]> = {};
-  let current = 'summary';
+  // Pre-heading content (name/contact) starts in the header region.
+  let current = HEADER_SECTION;
 
   for (const line of lines) {
-    const maybe = line.trim().toLowerCase().replace(/:$/, '');
-    if (SECTION_HEADERS.includes(maybe)) {
-      current = maybe;
+    const resolved = resolveSectionKey(line);
+    if (resolved) {
+      current = resolved;
       output[current] ??= [];
       continue;
     }

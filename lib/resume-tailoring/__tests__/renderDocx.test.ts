@@ -3,6 +3,7 @@ import PizZip from 'pizzip';
 import { describe, expect, it } from 'vitest';
 import { renderDocx } from '@/lib/resume-tailoring/renderDocx';
 import { tailorResume } from '@/lib/resume-tailoring/tailorResume';
+import { parseResume } from '@/lib/resume-tailoring/parseResume';
 
 describe('renderDocx', () => {
   it('produces a valid docx readable by mammoth with all sections', async () => {
@@ -106,5 +107,65 @@ describe('tailorResume in-place DOCX editing', () => {
     // Output remains a valid, readable DOCX.
     const { value } = await mammoth.extractRawText({ buffer: result.outputBuffer });
     expect(value).toContain('React applications');
+  });
+
+  it('never merges or overwrites the name/contact header', async () => {
+    const headerName = 'Jane Q. Candidate';
+    const headerContact = '555-123-4567 | jane@example.com';
+    const body = [
+      `<w:p><w:pPr><w:rPr><w:b/></w:rPr></w:pPr><w:r><w:rPr><w:b/></w:rPr><w:t xml:space="preserve">${headerName}</w:t></w:r></w:p>`,
+      `<w:p><w:r><w:t xml:space="preserve">${headerContact}</w:t></w:r></w:p>`,
+      `<w:p><w:pPr><w:rPr><w:b/></w:rPr></w:pPr><w:r><w:rPr><w:b/></w:rPr><w:t xml:space="preserve">Experience</w:t></w:r></w:p>`,
+      styledBullet('Built React applications for enterprise clients'),
+    ].join('');
+
+    const documentXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:body>${body}<w:sectPr/></w:body></w:document>`;
+
+    const zipIn = new PizZip();
+    zipIn.file('[Content_Types].xml', CONTENT_TYPES);
+    zipIn.file('_rels/.rels', ROOT_RELS);
+    zipIn.file('word/document.xml', documentXml);
+    zipIn.file('word/_rels/document.xml.rels', DOCUMENT_RELS);
+    zipIn.file('word/styles.xml', STYLES);
+    zipIn.file('word/numbering.xml', NUMBERING);
+    const resumeBuffer = zipIn.generate({ type: 'nodebuffer' });
+
+    const result = await tailorResume({
+      resumeBuffer,
+      resumeFilename: 'resume.docx',
+      jobPostingText: 'Required skills: React, Docker, AWS. Build and deploy applications.',
+      aggressiveness: 'max',
+      trustedClaimExpansion: true,
+    });
+
+    const outXml = new PizZip(result.outputBuffer).file('word/document.xml')?.asText() ?? '';
+    // Name and contact survive unchanged and are not concatenated.
+    expect(outXml).toContain(headerName);
+    expect(outXml).toContain(headerContact);
+    expect(outXml).not.toContain(`${headerName}555`);
+    // The name was not overwritten by a generated summary blob.
+    expect(outXml).not.toContain(`Results-driven professional`);
+  });
+});
+
+describe('parseResume header handling', () => {
+  it('keeps name/contact in header and leaves summary empty without a Summary heading', async () => {
+    const buffer = Buffer.from(
+      `Jane Q. Candidate\n555-123-4567 | jane@example.com\nExperience\n- Built React applications`,
+    );
+
+    const parsed = await parseResume({ buffer, filename: 'resume.txt' });
+
+    expect(parsed.sections.header).toContain('Jane Q. Candidate');
+    expect(parsed.sections.header).toContain('555-123-4567 | jane@example.com');
+    expect(parsed.sections.summary ?? []).toHaveLength(0);
+  });
+
+  it('maps Profile/Objective headings to the summary section', async () => {
+    const buffer = Buffer.from(`Jane Candidate\nProfile\nExperienced engineer\nSkills\nReact`);
+    const parsed = await parseResume({ buffer, filename: 'resume.txt' });
+    expect(parsed.sections.summary).toContain('Experienced engineer');
+    expect(parsed.sections.header).toContain('Jane Candidate');
   });
 });

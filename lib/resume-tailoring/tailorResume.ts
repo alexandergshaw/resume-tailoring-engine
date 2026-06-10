@@ -60,6 +60,7 @@ export async function tailorResume(input: TailorResumeInput): Promise<TailoredRe
     });
   } else {
     outputBuffer = renderDocx({
+      header: parsedResume.sections.header ?? [],
       summary,
       skills: orderedSkills,
       experienceBullets,

@@ -5,6 +5,7 @@ import type { ScoredBullet } from './types';
 
 type RenderInput = {
   templateBuffer?: Buffer;
+  header?: string[];
   summary: string;
   skills: string[];
   experienceBullets: string[];
@@ -107,6 +108,10 @@ function buildDefaultDocx(input: RenderInput): Buffer {
   };
 
   const paragraphs: string[] = [];
+  // Render the header (name/contact) as a leading block, not under a heading.
+  for (const line of input.header ?? []) {
+    if (line.trim()) paragraphs.push(bodyParagraph(line));
+  }
   for (const key of order) {
     const section = sectionContent[key];
     if (!section || section.lines.length === 0) continue;
