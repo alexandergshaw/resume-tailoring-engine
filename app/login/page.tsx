@@ -20,7 +20,7 @@ export default async function LoginPage() {
           Signed in as {user.email}, but this account is not an admin.
         </p>
       ) : (
-        <p>Sign in with an admin email to access the testing console.</p>
+        <p>Sign in with GitHub using an admin account to access the testing console.</p>
       )}
       <LoginForm />
       <p style={{ marginTop: 24 }}>
