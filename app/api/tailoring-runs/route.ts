@@ -1,9 +1,6 @@
-import crypto from 'node:crypto';
 import { NextResponse } from 'next/server';
 import { validateApiKey } from '@/lib/auth/apiKeys';
-import { enqueueTailoringRun, recordUsageEvent } from '@/lib/queue';
-import { AGGRESSIVENESS_LEVELS, type AggressivenessLevel } from '@/lib/resume-tailoring/types';
-import { storeBuffer } from '@/lib/storage';
+import { createTailoringRun } from '@/lib/tailoringRuns';
 
 export async function POST(request: Request) {
   const auth = await validateApiKey(request.headers.get('authorization'));
@@ -20,31 +17,19 @@ export async function POST(request: Request) {
   }
 
   const buffer = Buffer.from(await resumeFile.arrayBuffer());
-  const resumePath = await storeBuffer(`inputs/${crypto.randomUUID()}-${resumeFile.name}`, buffer);
 
-  const run = await enqueueTailoringRun({
-    api_client_id: auth.apiClientId,
-    mode: 'deterministic',
-    aggressiveness: normalizeAggressiveness(`${form.get('aggressiveness') ?? 'balanced'}`),
-    trusted_claim_expansion: `${form.get('trusted_claim_expansion') ?? 'false'}` === 'true',
-    resume_file_path: resumePath,
-    job_posting_text: jobPostingText,
-    job_posting_url: optionalValue(form.get('job_posting_url')),
-    callback_url: optionalValue(form.get('callback_url')),
-  });
-
-  await recordUsageEvent({
+  const run = await createTailoringRun({
     apiClientId: auth.apiClientId,
-    tailoringRunId: run.id,
-    eventType: 'run_created',
-    metadata: { aggressiveness: run.aggressiveness, trusted_claim_expansion: run.trusted_claim_expansion },
+    resumeBuffer: buffer,
+    resumeFilename: resumeFile.name,
+    jobPostingText,
+    aggressiveness: `${form.get('aggressiveness') ?? 'balanced'}`,
+    trustedClaimExpansion: `${form.get('trusted_claim_expansion') ?? 'false'}` === 'true',
+    jobPostingUrl: optionalValue(form.get('job_posting_url')),
+    callbackUrl: optionalValue(form.get('callback_url')),
   });
 
   return NextResponse.json({ run_id: run.id, status: run.status }, { status: 202 });
-}
-
-function normalizeAggressiveness(value: string): AggressivenessLevel {
-  return AGGRESSIVENESS_LEVELS.includes(value as AggressivenessLevel) ? (value as AggressivenessLevel) : 'balanced';
 }
 
 function optionalValue(value: FormDataEntryValue | null): string | null {

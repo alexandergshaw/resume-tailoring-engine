@@ -1,9 +1,26 @@
 import Link from 'next/link';
+import { redirect } from 'next/navigation';
+import { getCurrentUser, isAdmin } from '@/lib/auth/adminAuth';
 import { getTailoringReport, getTailoringRun } from '@/lib/queue';
 
 export const dynamic = 'force-dynamic';
 
 export default async function TailoringRunDetail({ params }: { params: Promise<{ id: string }> }) {
+  const user = await getCurrentUser();
+
+  if (!user) {
+    redirect('/login');
+  }
+
+  if (!isAdmin(user)) {
+    return (
+      <main style={{ padding: 24 }}>
+        <h1>Tailoring Run</h1>
+        <p style={{ color: '#b00020' }}>Not authorized. Signed in as {user.email}.</p>
+      </main>
+    );
+  }
+
   const { id } = await params;
   const run = await getTailoringRun(id);
 

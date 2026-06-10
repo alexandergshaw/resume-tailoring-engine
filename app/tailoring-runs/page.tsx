@@ -1,45 +1,44 @@
-'use client';
+import Link from 'next/link';
+import { redirect } from 'next/navigation';
+import { getCurrentUser, isAdmin } from '@/lib/auth/adminAuth';
+import { signOut } from './actions';
+import TailoringRunForm from './TailoringRunForm';
 
-import { FormEvent, useState } from 'react';
+export const dynamic = 'force-dynamic';
 
-export default function TailoringRunsPage() {
-  const [runId, setRunId] = useState<string>('');
-  const [status, setStatus] = useState<string>('');
+export default async function TailoringRunsPage() {
+  const user = await getCurrentUser();
 
-  async function onSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    const form = new FormData(event.currentTarget);
-    const response = await fetch('/api/tailoring-runs', { method: 'POST', body: form });
-    const data = await response.json();
-    setRunId(data.run_id);
-    setStatus(data.status);
+  if (!user) {
+    redirect('/login');
+  }
+
+  if (!isAdmin(user)) {
+    return (
+      <main style={{ padding: 24 }}>
+        <h1>Resume Tailoring Admin</h1>
+        <p style={{ color: '#b00020' }}>Not authorized. Signed in as {user.email}.</p>
+        <form action={signOut}>
+          <button type="submit">Sign out</button>
+        </form>
+      </main>
+    );
   }
 
   return (
     <main style={{ padding: 24 }}>
-      <h1>Resume Tailoring Admin</h1>
-      <form onSubmit={onSubmit}>
-        <p>
-          <input name="resume_file" type="file" required />
-        </p>
-        <p>
-          <textarea name="job_posting_text" placeholder="Paste job posting" rows={10} cols={80} required />
-        </p>
-        <p>
-          <select name="aggressiveness" defaultValue="balanced">
-            <option value="conservative">conservative</option>
-            <option value="balanced">balanced</option>
-            <option value="aggressive">aggressive</option>
-            <option value="max">max</option>
-          </select>
-        </p>
-        <button type="submit">Run tailoring</button>
-      </form>
-      {runId && (
-        <p>
-          Run queued: <a href={`/tailoring-runs/${runId}`}>{runId}</a> ({status})
-        </p>
-      )}
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <h1>Resume Tailoring Admin</h1>
+        <form action={signOut}>
+          <span style={{ marginRight: 8, color: '#555' }}>{user.email}</span>
+          <button type="submit">Sign out</button>
+        </form>
+      </div>
+      <TailoringRunForm />
+      <p style={{ marginTop: 16, color: '#777' }}>Testing console — runs use the configured database.</p>
+      <p>
+        <Link href="/">Home</Link>
+      </p>
     </main>
   );
 }
