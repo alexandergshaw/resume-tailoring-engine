@@ -18,10 +18,10 @@ export async function tailorResume(input: TailorResumeInput): Promise<TailoredRe
   const config = AGGRESSIVENESS_CONFIG[aggressiveness];
 
   // Score bullets for enrichment targeting only — nothing is removed or reordered.
-  const scored = scoreContent(parsedResume.bullets, parsedJob);
+  const scored = await scoreContent(parsedResume.bullets, parsedJob);
 
   // Additive keyword enrichment: weave posting terminology into existing bullets.
-  const enriched = enrichContent({
+  const enriched = await enrichContent({
     bullets: scored,
     parsedJob,
     resumeText: parsedResume.rawText,

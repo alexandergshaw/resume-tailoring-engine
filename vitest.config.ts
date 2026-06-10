@@ -5,6 +5,7 @@ export default defineConfig({
   test: {
     environment: 'node',
     include: ['**/*.test.ts'],
+    setupFiles: ['./lib/resume-tailoring/__tests__/setup.ts'],
   },
   resolve: {
     alias: {
