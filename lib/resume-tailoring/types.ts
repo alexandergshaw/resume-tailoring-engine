@@ -1,3 +1,5 @@
+import type { DocxDocument } from './docxEditor';
+
 export type AggressivenessLevel = 'conservative' | 'balanced' | 'aggressive' | 'max';
 export const AGGRESSIVENESS_LEVELS: AggressivenessLevel[] = ['conservative', 'balanced', 'aggressive', 'max'];
 
@@ -5,12 +7,21 @@ export type ResumeBullet = {
   text: string;
   section: string;
   detectedSkills: string[];
+  // Back-reference to the source DOCX paragraph block this bullet came from,
+  // enabling in-place editing that preserves the original formatting. Absent
+  // for plain-text input.
+  sourceBlockId?: number;
 };
 
 export type ParsedResume = {
   rawText: string;
   sections: Record<string, string[]>;
   bullets: ResumeBullet[];
+  // Present only when the input was a parseable DOCX. Carries the original
+  // package so the renderer can edit text in place and keep all styling.
+  docx?: DocxDocument;
+  // Ordered source paragraph block ids per section (DOCX input only).
+  sectionBlocks?: Record<string, number[]>;
 };
 
 export type ParsedJob = {

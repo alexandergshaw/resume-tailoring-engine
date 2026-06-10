@@ -1,5 +1,7 @@
 import Docxtemplater from 'docxtemplater';
 import PizZip from 'pizzip';
+import type { DocxDocument } from './docxEditor';
+import type { ScoredBullet } from './types';
 
 type RenderInput = {
   templateBuffer?: Buffer;
@@ -12,6 +14,66 @@ type RenderInput = {
 };
 
 const DEFAULT_SECTION_ORDER = ['summary', 'skills', 'experience', 'projects', 'education'];
+
+type InPlaceInput = {
+  doc: DocxDocument;
+  selected: ScoredBullet[];
+  rejected: ScoredBullet[];
+  summaryText?: string;
+  summaryBlockId?: number;
+  skillsText?: string;
+  skillsBlockId?: number;
+};
+
+/**
+ * Renders a tailored resume by editing the uploaded DOCX in place rather than
+ * regenerating it. This preserves the source document's formatting and styling
+ * (fonts, headings, bullet/number styles, spacing, tables) because the original
+ * OOXML parts are kept verbatim and only paragraph text is mutated.
+ *
+ * Note: section-level reordering is intentionally NOT applied here. Moving whole
+ * heading+content groups in place is high-risk for layout fidelity, and the goal
+ * is strict adherence to the original formatting. Bullets are still reordered
+ * within their section and low-relevance bullets removed.
+ */
+export function renderInPlace(input: InPlaceInput): Buffer {
+  const { doc } = input;
+
+  // 1. Update rewritten bullet text (e.g. claim expansion) in place.
+  for (const bullet of input.selected) {
+    if (bullet.sourceBlockId === undefined) continue;
+    if (doc.getText(bullet.sourceBlockId) !== bullet.text) {
+      doc.setText(bullet.sourceBlockId, bullet.text);
+    }
+  }
+
+  // 2. Remove dropped (rejected) bullets.
+  for (const bullet of input.rejected) {
+    if (bullet.sourceBlockId !== undefined) {
+      doc.remove(bullet.sourceBlockId);
+    }
+  }
+
+  // 3. Reorder retained bullets within each section (by their selected order).
+  for (const section of ['experience', 'projects']) {
+    const orderedIds = input.selected
+      .filter((bullet) => bullet.section === section && bullet.sourceBlockId !== undefined)
+      .map((bullet) => bullet.sourceBlockId as number);
+    if (orderedIds.length > 1) {
+      doc.reorder(orderedIds);
+    }
+  }
+
+  // 4. Optionally rewrite summary / skills text in their original paragraphs.
+  if (input.summaryText !== undefined && input.summaryBlockId !== undefined) {
+    doc.setText(input.summaryBlockId, input.summaryText);
+  }
+  if (input.skillsText !== undefined && input.skillsBlockId !== undefined) {
+    doc.setText(input.skillsBlockId, input.skillsText);
+  }
+
+  return doc.toBuffer();
+}
 
 export function renderDocx(input: RenderInput): Buffer {
   if (input.templateBuffer) {

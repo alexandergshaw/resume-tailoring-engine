@@ -4,7 +4,7 @@ import { extractSkills } from './extractSkills';
 import { generateReport } from './generateReport';
 import { parseJob } from './parseJob';
 import { parseResume } from './parseResume';
-import { renderDocx } from './renderDocx';
+import { renderDocx, renderInPlace } from './renderDocx';
 import { scoreContent } from './scoreContent';
 import type { ScoredBullet, TailorResumeInput, TailoredResult } from './types';
 
@@ -41,14 +41,33 @@ export async function tailorResume(input: TailorResumeInput): Promise<TailoredRe
   const summary = buildSummary(parsedResume.sections.summary?.join(' ').trim() ?? '', config.summaryStrategy, orderedSkills);
   const sectionOrder = config.reorderSections ? REORDERED_SECTION_ORDER : DEFAULT_SECTION_ORDER;
 
-  const outputBuffer = renderDocx({
-    summary,
-    skills: orderedSkills,
-    experienceBullets,
-    projects: orderedProjects,
-    education: parsedResume.sections.education?.join(' ').trim() ?? '',
-    sectionOrder,
-  });
+  let outputBuffer: Buffer;
+  if (parsedResume.docx) {
+    // Faithful path: edit the uploaded DOCX in place so original formatting and
+    // styling are preserved. The from-scratch renderer below is only a fallback
+    // for plain-text input or unparseable DOCX files.
+    const sectionBlocks = parsedResume.sectionBlocks ?? {};
+    const summaryBlockId = sectionBlocks.summary?.[0];
+    const skillsBlockId = sectionBlocks.skills?.[0];
+    outputBuffer = renderInPlace({
+      doc: parsedResume.docx,
+      selected: expansionResult.bullets,
+      rejected,
+      summaryText: config.summaryStrategy !== 'preserve' && summaryBlockId !== undefined ? summary : undefined,
+      summaryBlockId,
+      skillsText: config.reorderSkills && skillsBlockId !== undefined ? orderedSkills.join(', ') : undefined,
+      skillsBlockId,
+    });
+  } else {
+    outputBuffer = renderDocx({
+      summary,
+      skills: orderedSkills,
+      experienceBullets,
+      projects: orderedProjects,
+      education: parsedResume.sections.education?.join(' ').trim() ?? '',
+      sectionOrder,
+    });
+  }
 
   const sectionDecisions = buildSectionDecisions(config, rejected.length);
 
