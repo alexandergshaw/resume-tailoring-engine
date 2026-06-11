@@ -87,6 +87,7 @@ export default function TailoringRunForm() {
             <option value="balanced">balanced</option>
             <option value="aggressive">aggressive</option>
             <option value="max">max</option>
+            <option value="top">top</option>
           </select>
         </p>
         <button type="submit" disabled={pending}>

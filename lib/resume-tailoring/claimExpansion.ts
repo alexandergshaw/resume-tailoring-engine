@@ -77,6 +77,10 @@ function isProtected(text: string): boolean {
   return PROTECTED_PATTERNS.some(({ pattern }) => pattern.test(text));
 }
 
+// Re-exported so other modules (e.g. region replacement) can reuse the exact
+// same factual-claim protection logic.
+export { isProtected };
+
 // Meaning-preserving terminology upgrades that align weak resume phrasing with
 // stronger, results-oriented language. These are intentionally conservative —
 // they swap synonyms, never invent scope or outcomes.

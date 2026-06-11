@@ -22,6 +22,14 @@ export type AggressivenessConfig = {
   summaryStrategy: 'preserve' | 'prioritize_keywords' | 'maximize_relevance';
   // Maximum number of keywords inserted into any single bullet.
   maxInsertionsPerBullet: number;
+  // DESTRUCTIVE, opt-in (only at the "top" level): perform in-place replacement
+  // of high-value terminology regions (job titles, skill-category labels,
+  // individual skills) under a strict char-count + line-count layout lock. All
+  // other levels are strictly additive and never set this.
+  replaceRegions?: boolean;
+  // When replaceRegions is on, restrict replacements to posting terms the resume
+  // already semantically supports (anti-fabrication). Defaults to ON behavior.
+  groundedReplacementsOnly?: boolean;
 };
 
 export const AGGRESSIVENESS_CONFIG: Record<AggressivenessLevel, AggressivenessConfig> = {
@@ -56,5 +64,18 @@ export const AGGRESSIVENESS_CONFIG: Record<AggressivenessLevel, AggressivenessCo
     appendSkills: true,
     summaryStrategy: 'maximize_relevance',
     maxInsertionsPerBullet: 2,
+  },
+  // "top": everything "max" does, PLUS destructive in-place region replacement
+  // (the only level that deletes/replaces terminology). Replacements are
+  // layout-locked (exact char + line counts) and grounded by default.
+  top: {
+    substituteTerminology: true,
+    augmentBullets: true,
+    augmentTitlesAndProjects: true,
+    appendSkills: true,
+    summaryStrategy: 'maximize_relevance',
+    maxInsertionsPerBullet: 2,
+    replaceRegions: true,
+    groundedReplacementsOnly: true,
   },
 };

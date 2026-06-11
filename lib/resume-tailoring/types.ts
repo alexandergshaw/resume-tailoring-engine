@@ -1,8 +1,8 @@
 import type { DocxDocument } from './docxEditor';
 import type { KeyPhrase } from './extractKeyPhrases';
 
-export type AggressivenessLevel = 'conservative' | 'balanced' | 'aggressive' | 'max';
-export const AGGRESSIVENESS_LEVELS: AggressivenessLevel[] = ['conservative', 'balanced', 'aggressive', 'max'];
+export type AggressivenessLevel = 'conservative' | 'balanced' | 'aggressive' | 'max' | 'top';
+export const AGGRESSIVENESS_LEVELS: AggressivenessLevel[] = ['conservative', 'balanced', 'aggressive', 'max', 'top'];
 
 export type ResumeBullet = {
   text: string;
@@ -68,6 +68,16 @@ export type TailoringReport = {
     already_covered: string[];
     missing_gaps: string[];
   };
+  // Destructive in-place region replacements applied at the "top" level. Each
+  // entry confirms the char/line layout lock held for that swap.
+  replacements?: Array<{
+    kind: 'job_title' | 'skill_category_label' | 'skill_item';
+    original_text: string;
+    new_text: string;
+    char_count: number;
+    line_count: number;
+    lock_held: boolean;
+  }>;
 };
 
 export type TailoredResult = {

@@ -63,11 +63,14 @@ function splitTopLevelElements(xml: string): string[] {
 }
 
 function paragraphText(pXml: string): string {
-  const re = /<w:t[^>]*>([\s\S]*?)<\/w:t>/g;
+  // Capture visible text (<w:t>) AND hard line breaks (<w:br/>) in document
+  // order, so the returned string reflects the paragraph's true line count.
+  const re = /<w:t[^>]*>([\s\S]*?)<\/w:t>|<w:br\b[^>]*\/>|<w:br\b[^>]*>[\s\S]*?<\/w:br>/g;
   let out = '';
   let m: RegExpExecArray | null;
   while ((m = re.exec(pXml)) !== null) {
-    out += decodeXml(m[1]);
+    if (m[1] !== undefined) out += decodeXml(m[1]);
+    else out += '\n';
   }
   return out;
 }
@@ -75,8 +78,9 @@ function paragraphText(pXml: string): string {
 /**
  * Rewrites a paragraph's visible text while preserving its original paragraph
  * properties (<w:pPr>, including numbering/bullet style) and the run
- * properties (<w:rPr>, e.g. font/bold) of its first run. All runs are
- * collapsed into a single run carrying the preserved formatting.
+ * properties (<w:rPr>, e.g. font/bold) of its first run. Internal newlines in
+ * `newText` are re-emitted as <w:br/> hard breaks between <w:t> elements, so a
+ * replacement with the same number of lines keeps the same vertical footprint.
  */
 function setParagraphText(pXml: string, newText: string): string {
   const open = pXml.match(/^<w:p\b[^>]*>/)?.[0] ?? '<w:p>';
@@ -88,7 +92,12 @@ function setParagraphText(pXml: string, newText: string): string {
     rPr = firstRun[1].match(/<w:rPr\b[^>]*>[\s\S]*?<\/w:rPr>/)?.[0] ?? '';
   }
 
-  return `${open}${pPr}<w:r>${rPr}<w:t xml:space="preserve">${escapeXml(newText)}</w:t></w:r></w:p>`;
+  const inner = newText
+    .split('\n')
+    .map((line) => `<w:t xml:space="preserve">${escapeXml(line)}</w:t>`)
+    .join('<w:br/>');
+
+  return `${open}${pPr}<w:r>${rPr}${inner}</w:r></w:p>`;
 }
 
 /**
@@ -153,6 +162,21 @@ export class DocxDocument {
   setText(id: number, text: string): void {
     const block = this.blocks.find((b) => b.id === id);
     if (block) block.xml = setParagraphText(block.xml, text);
+  }
+
+  /** Visible lines of a paragraph, split on its hard <w:br/> breaks. */
+  getParagraphLines(id: number): string[] {
+    return this.getText(id).split('\n');
+  }
+
+  /**
+   * Writes a paragraph from explicit lines, re-emitting one <w:br/> between each
+   * so the original line-break count is preserved. Use for layout-locked
+   * replacements that must keep the paragraph's exact vertical footprint.
+   */
+  setTextPreservingBreaks(id: number, lines: string[]): void {
+    const block = this.blocks.find((b) => b.id === id);
+    if (block) block.xml = setParagraphText(block.xml, lines.join('\n'));
   }
 
   remove(id: number): void {

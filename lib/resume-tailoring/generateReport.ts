@@ -8,6 +8,7 @@ export function generateReport(params: {
   expandedClaims: ClaimExpansion[];
   sectionDecisions: Record<string, string>;
   keyPhrases?: TailoringReport['key_phrases'];
+  replacements?: TailoringReport['replacements'];
 }): TailoringReport {
   const keywordCoverage: Record<string, boolean> = {};
   for (const skill of [...params.matchedSkills, ...params.missingSkills]) {
@@ -23,5 +24,6 @@ export function generateReport(params: {
     section_decisions: params.sectionDecisions,
     expanded_claims: params.expandedClaims,
     key_phrases: params.keyPhrases,
+    replacements: params.replacements,
   };
 }

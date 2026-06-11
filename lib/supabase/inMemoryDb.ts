@@ -3,7 +3,7 @@ export type TailoringRunRecord = {
   api_client_id: string | null;
   status: 'queued' | 'processing' | 'completed' | 'failed';
   mode: 'deterministic';
-  aggressiveness: 'conservative' | 'balanced' | 'aggressive' | 'max';
+  aggressiveness: 'conservative' | 'balanced' | 'aggressive' | 'max' | 'top';
   trusted_claim_expansion: boolean;
   claim_expansion_used: boolean;
   resume_file_path: string;
