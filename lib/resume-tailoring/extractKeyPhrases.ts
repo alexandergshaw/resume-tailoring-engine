@@ -140,16 +140,35 @@ function mineCandidates(text: string): string[] {
 }
 
 // Deterministic fallback when the NLP model is unavailable: unigrams + bigrams
-// of content words.
+// formed only from runs of consecutive content words. Runs are broken at clause
+// punctuation and stopwords so unrelated comma-separated terms ("React, Kafka")
+// never fuse into a spurious phrase.
 function fallbackNgrams(text: string): string[] {
-  const words = text
-    .toLowerCase()
-    .split(/[^a-z0-9+#./-]+/)
-    .filter((word) => word.length > 2 && !STOPWORDS.has(word));
-  const grams: string[] = [...words];
-  for (let i = 0; i < words.length - 1; i += 1) {
-    grams.push(`${words[i]} ${words[i + 1]}`);
+  const grams: string[] = [];
+  const segments = text.toLowerCase().split(/[,;.\n|]+/);
+
+  for (const segment of segments) {
+    const words = segment.split(/[^a-z0-9+#-]+/).filter(Boolean);
+    let run: string[] = [];
+    const flush = () => {
+      for (const word of run) {
+        if (word.length > 2) grams.push(word);
+      }
+      for (let i = 0; i < run.length - 1; i += 1) {
+        grams.push(`${run[i]} ${run[i + 1]}`);
+      }
+      run = [];
+    };
+    for (const word of words) {
+      if (word.length <= 2 || STOPWORDS.has(word)) {
+        flush();
+      } else {
+        run.push(word);
+      }
+    }
+    flush();
   }
+
   return grams;
 }
 
@@ -157,6 +176,7 @@ const STOPWORDS = new Set([
   'the', 'and', 'for', 'with', 'you', 'our', 'are', 'will', 'have', 'has', 'this',
   'that', 'from', 'your', 'who', 'all', 'any', 'can', 'into', 'out', 'per', 'via',
   'including', 'such', 'across', 'using', 'able', 'must', 'should', 'their', 'them',
+  'required', 'preferred', 'responsibilities', 'qualifications', 'requirements',
 ]);
 
 async function mergeSemanticDuplicates(
