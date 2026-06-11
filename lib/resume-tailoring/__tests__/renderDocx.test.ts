@@ -149,6 +149,54 @@ describe('tailorResume in-place DOCX editing', () => {
   });
 });
 
+describe('real-resume enrichment (regression)', () => {
+  // Builds a styled DOCX whose bullets contain incidental numbers (a date) and a
+  // genuine quantified result, to prove the engine actually edits real resumes
+  // instead of treating every digit-bearing line as untouchable.
+  function buildResumeWithNumbers(): Buffer {
+    const body = [
+      `<w:p><w:pPr><w:rPr><w:b/></w:rPr></w:pPr><w:r><w:rPr><w:b/></w:rPr><w:t xml:space="preserve">Experience</w:t></w:r></w:p>`,
+      styledBullet('Built scalable services in 2021 for enterprise clients'),
+      styledBullet('Reduced infrastructure costs by 35% across regions'),
+    ].join('');
+
+    const documentXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:body>${body}<w:sectPr/></w:body></w:document>`;
+
+    const zip = new PizZip();
+    zip.file('[Content_Types].xml', CONTENT_TYPES);
+    zip.file('_rels/.rels', ROOT_RELS);
+    zip.file('word/document.xml', documentXml);
+    zip.file('word/_rels/document.xml.rels', DOCUMENT_RELS);
+    zip.file('word/styles.xml', STYLES);
+    zip.file('word/numbering.xml', NUMBERING);
+    return zip.generate({ type: 'nodebuffer' });
+  }
+
+  it('enriches a digit-bearing bullet while leaving a quantified-result bullet untouched', async () => {
+    const result = await tailorResume({
+      resumeBuffer: buildResumeWithNumbers(),
+      resumeFilename: 'resume.docx',
+      jobPostingText: 'Required skills: Kubernetes. Design and deliver scalable services.',
+      aggressiveness: 'max',
+      trustedClaimExpansion: true,
+    });
+
+    const outXml = new PizZip(result.outputBuffer).file('word/document.xml')?.asText() ?? '';
+
+    // The bullet that merely contains a date (2021) was enriched — its weak verb
+    // phrase was strengthened — even though it carries a number.
+    expect(outXml).toContain('designed and delivered scalable services in 2021');
+    expect(outXml).not.toContain('Built scalable services in 2021');
+
+    // The genuine quantified-result bullet (35%) is preserved byte-for-byte.
+    expect(outXml).toContain('Reduced infrastructure costs by 35% across regions');
+
+    // At least one measurable change was recorded.
+    expect(result.report.expanded_claims.length).toBeGreaterThan(0);
+  });
+});
+
 describe('parseResume header handling', () => {
   it('keeps name/contact in header and leaves summary empty without a Summary heading', async () => {
     const buffer = Buffer.from(

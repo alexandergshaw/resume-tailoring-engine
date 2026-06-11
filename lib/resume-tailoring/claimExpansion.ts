@@ -1,21 +1,45 @@
 import type { ClaimExpansion, ParsedJob, ScoredBullet } from './types';
 import { ensureNlpLoaded, insertKeywordGrammatically, strengthenVerb } from './nlp';
 
-// Protected categories that may never be altered or fabricated by claim expansion.
+// Dates are never fabricated, but a bullet merely *containing* a date (e.g.
+// "Led the 2021 migration") should still be eligible for additive enrichment.
+// So date patterns are anti-fabrication only (see FABRICATION_PATTERNS) and are
+// intentionally NOT part of the pre-check that blocks rewriting.
+const DATE_PATTERNS: RegExp[] = [
+  /\b(19\d{2}|20\d{2})\b/,
+  /\b(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\.?\s+\d{4}\b/i,
+];
+
+// Genuine quantified-result claims that must never be altered or fabricated.
+// Crucially, this is NOT "any digit" — incidental numbers (dates, versions,
+// counts woven into prose) must not block enrichment. We only protect figures
+// that read as measurable outcomes: percentages, currency-scale numbers,
+// magnitudes, multipliers, explicit quantities, and result verbs paired with a
+// number.
+const METRIC_PATTERNS: RegExp[] = [
+  /\d+(\.\d+)?\s?%/, // 40%, 12.5 %
+  /\b\d{1,3}(,\d{3})+\b/, // 5,000 / 120,000
+  /\b\d+(\.\d+)?(k|m|bn|mm)\b/i, // 5k, 1.2M, 10bn
+  /\b\d+(\.\d+)?\s*(million|billion|thousand|percent)\b/i,
+  /\b\d+(\.\d+)?x\b/i, // 3x throughput
+  /\b\d+\+?\s+(users|customers|clients|engineers|developers|employees|people|projects|requests|transactions|records|members|hours|countries|markets)\b/i,
+  /\bteam of \d+/i,
+  /\b(increased|decreased|reduced|improved|grew|cut|saved|generated|boosted|accelerated|raised|lowered|optimized)\b[^.]*?\d/i,
+];
+
+// Protected categories that block in-place rewriting of a bullet entirely.
+// These are claims where any wording change risks misrepresentation.
 const PROTECTED_PATTERNS: Array<{ category: string; pattern: RegExp }> = [
   // employers
   { category: 'employer', pattern: /\b(inc|llc|corp|corporation|ltd|gmbh|co)\b/i },
-  // dates
-  { category: 'date', pattern: /\b(19\d{2}|20\d{2})\b/ },
-  { category: 'date', pattern: /\b(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\.?\s+\d{4}\b/i },
   // certifications & degrees
   { category: 'credential', pattern: /\b(certification|certified|certificate|degree|diploma|b\.?s\.?|m\.?s\.?|b\.?a\.?|m\.?b\.?a\.?|ph\.?d\.?|bachelor|master|doctorate)\b/i },
   // compensation
   { category: 'compensation', pattern: /\$\s?\d|\b(salary|compensation|wage|stipend|usd|per\s+(hour|year|annum)|annual\s+pay)\b/i },
   // locations
   { category: 'location', pattern: /\b[A-Z][a-zA-Z]+,\s?(?:[A-Z]{2}|[A-Z][a-z]+)\b|\b(remote|on-?site|hybrid|relocat)\w*\b/ },
-  // metrics (any numeric figure that could be a fabricated result)
-  { category: 'metric', pattern: /\d/ },
+  // genuine quantified results
+  ...METRIC_PATTERNS.map((pattern) => ({ category: 'metric', pattern })),
   // work authorization
   { category: 'work_authorization', pattern: /\b(visa|h-?1b|green\s?card|citizen|citizenship|sponsorship|work\s+authoriz\w*|authorized\s+to\s+work)\b/i },
   // publications
@@ -52,6 +76,23 @@ export function claimExpansion(params: { bullets: ScoredBullet[]; jobText: strin
 function isProtected(text: string): boolean {
   return PROTECTED_PATTERNS.some(({ pattern }) => pattern.test(text));
 }
+
+// Meaning-preserving terminology upgrades that align weak resume phrasing with
+// stronger, results-oriented language. These are intentionally conservative —
+// they swap synonyms, never invent scope or outcomes.
+const TERMINOLOGY_SUBSTITUTIONS: Array<{
+  pattern: RegExp;
+  replacement: string;
+  claimType: ClaimExpansion['claim_type'];
+}> = [
+  { pattern: /\bdeveloper\b/gi, replacement: 'software engineer', claimType: 'job_title' },
+  { pattern: /\bbuilt\b/gi, replacement: 'designed and delivered', claimType: 'job_duty' },
+  { pattern: /\bworked on\b/gi, replacement: 'delivered', claimType: 'job_duty' },
+  { pattern: /\bresponsible for\b/gi, replacement: 'owned', claimType: 'job_duty' },
+  { pattern: /\bin charge of\b/gi, replacement: 'led', claimType: 'job_duty' },
+  { pattern: /\bassisted with\b/gi, replacement: 'supported', claimType: 'job_duty' },
+  { pattern: /\bparticipated in\b/gi, replacement: 'contributed to', claimType: 'job_duty' },
+];
 
 export type EnrichConfig = {
   substituteTerminology: boolean;
@@ -121,13 +162,16 @@ export async function enrichContent(params: {
     let next = bullet.text;
 
     if (config.substituteTerminology) {
-      next = replaceTerm(next, /\bdeveloper\b/gi, 'software engineer', 'job_title', expansions);
-      next = replaceTerm(next, /\bbuilt\b/gi, 'designed and delivered', 'job_duty', expansions);
+      for (const { pattern, replacement, claimType } of TERMINOLOGY_SUBSTITUTIONS) {
+        // Reset stateful global regexes before each reuse.
+        pattern.lastIndex = 0;
+        next = replaceTerm(next, pattern, replacement, claimType, expansions);
+      }
     }
 
     // Strengthen a weak leading verb toward the posting's dominant action verb.
     if (config.substituteTerminology) {
-      const preferredVerb = parsedJob.titleKeywords.includes('engineer') ? 'engineered' : '';
+      const preferredVerb = preferredActionVerb(parsedJob);
       if (preferredVerb) {
         const strengthened = strengthenVerb(next, preferredVerb);
         if (strengthened !== next && !isProtected(strengthened)) {
@@ -168,12 +212,32 @@ export async function enrichContent(params: {
   return { bullets, expansions };
 }
 
-// Returns true when the rewritten text matches a protected category that the
-// original did not — guarding against fabricated metrics, dates, employers, etc.
+// Returns true when a rewrite would introduce a claim not supported by the
+// original text. This is the anti-fabrication guarantee: a rewrite may never
+// add a number, date, employer, credential, metric, etc. that the candidate did
+// not already state. Insertions are pure additive qualifiers (e.g. "using
+// Kubernetes"), so they always pass; anything that smuggles in a new fact is
+// rejected.
 function introducesProtectedClaim(original: string, rewritten: string): boolean {
+  // Never introduce new numeric content (metrics, counts, dates, versions).
+  if (countDigits(rewritten) > countDigits(original)) return true;
+  if (DATE_PATTERNS.some((pattern) => pattern.test(rewritten) && !pattern.test(original))) return true;
   return PROTECTED_PATTERNS.some(
     ({ pattern }) => pattern.test(rewritten) && !pattern.test(original),
   );
+}
+
+function countDigits(text: string): number {
+  return (text.match(/\d/g) ?? []).length;
+}
+
+// Chooses a stronger action verb to lead bullets with, based on the posting's
+// dominant role keyword. Returns '' when no confident choice applies.
+function preferredActionVerb(parsedJob: ParsedJob): string {
+  if (parsedJob.titleKeywords.includes('engineer')) return 'engineered';
+  if (parsedJob.titleKeywords.includes('architect')) return 'architected';
+  if (parsedJob.titleKeywords.includes('manager')) return 'led';
+  return '';
 }
 
 function uniq(values: string[]): string[] {
