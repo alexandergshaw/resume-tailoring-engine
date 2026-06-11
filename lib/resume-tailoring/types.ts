@@ -1,4 +1,5 @@
 import type { DocxDocument } from './docxEditor';
+import type { KeyPhrase } from './extractKeyPhrases';
 
 export type AggressivenessLevel = 'conservative' | 'balanced' | 'aggressive' | 'max';
 export const AGGRESSIVENESS_LEVELS: AggressivenessLevel[] = ['conservative', 'balanced', 'aggressive', 'max'];
@@ -32,6 +33,10 @@ export type ParsedJob = {
   titleKeywords: string[];
   responsibilities: string[];
   seniority: 'junior' | 'mid' | 'senior' | 'staff' | 'unknown';
+  // Ranked buzzwords/phrases mined from the posting (multi-word aware). Optional
+  // because the lightweight `parseJob` does not run the async miner; it is
+  // populated by the tailoring pipeline.
+  keyPhrases?: KeyPhrase[];
 };
 
 export type ScoredBullet = ResumeBullet & {
@@ -54,6 +59,15 @@ export type TailoringReport = {
   keyword_coverage: Record<string, boolean>;
   section_decisions: Record<string, string>;
   expanded_claims: ClaimExpansion[];
+  // Posting buzzword/phrase intelligence: what was detected and how it was
+  // handled. `integrated` lists phrases woven into the resume; `missing_gaps`
+  // are genuine gaps the resume has no basis for (never fabricated).
+  key_phrases?: {
+    detected: string[];
+    integrated: string[];
+    already_covered: string[];
+    missing_gaps: string[];
+  };
 };
 
 export type TailoredResult = {

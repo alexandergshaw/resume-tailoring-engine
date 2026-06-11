@@ -7,6 +7,7 @@ export function generateReport(params: {
   rejectedBullets: ScoredBullet[];
   expandedClaims: ClaimExpansion[];
   sectionDecisions: Record<string, string>;
+  keyPhrases?: TailoringReport['key_phrases'];
 }): TailoringReport {
   const keywordCoverage: Record<string, boolean> = {};
   for (const skill of [...params.matchedSkills, ...params.missingSkills]) {
@@ -21,5 +22,6 @@ export function generateReport(params: {
     keyword_coverage: keywordCoverage,
     section_decisions: params.sectionDecisions,
     expanded_claims: params.expandedClaims,
+    key_phrases: params.keyPhrases,
   };
 }

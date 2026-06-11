@@ -120,6 +120,11 @@ export async function enrichContent(params: {
   parsedJob: ParsedJob;
   resumeText: string;
   config: EnrichConfig;
+  // High-priority, posting-mined phrases pre-matched to a specific bullet index
+  // (from semantic coverage analysis). These are woven in first, before the
+  // generic skill round-robin. Each is already known to be missing from the
+  // resume but supported by the bullet's content.
+  phraseTargets?: Array<{ text: string; targetBulletIndex: number; weight: number }>;
 }): Promise<{ bullets: ScoredBullet[]; expansions: ClaimExpansion[] }> {
   const { config, parsedJob } = params;
   const expansions: ClaimExpansion[] = [];
@@ -142,17 +147,59 @@ export async function enrichContent(params: {
       ? ['experience']
       : [];
 
-  // Deterministic round-robin: rank eligible, non-protected bullets by score so
-  // the strongest bullets receive keywords first, but emit results in original
-  // order so the document is never reordered.
-  const queue = [...missingKeywords];
-  const targetIds = new Set(
-    [...params.bullets]
+  const isEligible = (index: number): boolean => {
+    const bullet = params.bullets[index];
+    return bullet !== undefined && eligibleSections.includes(bullet.section) && !isProtected(bullet.text);
+  };
+
+  // Per-bullet insertion budget so a single bullet is never over-stuffed.
+  const budget = new Map<number, number>();
+  params.bullets.forEach((_, index) => {
+    if (isEligible(index)) budget.set(index, config.maxInsertionsPerBullet);
+  });
+
+  // Insertion plan: bulletIndex -> ordered phrases/keywords to weave in.
+  const plan = new Map<number, string[]>();
+  const planFor = (index: number): string[] => {
+    const existing = plan.get(index);
+    if (existing) return existing;
+    const created: string[] = [];
+    plan.set(index, created);
+    return created;
+  };
+
+  // 1. Posting-mined phrases first (highest weight → most relevant bullet).
+  if (config.maxInsertionsPerBullet > 0) {
+    const sortedPhrases = [...(params.phraseTargets ?? [])].sort((a, b) => b.weight - a.weight);
+    for (const phrase of sortedPhrases) {
+      const index = phrase.targetBulletIndex;
+      const remaining = budget.get(index) ?? 0;
+      if (remaining > 0 && phrase.text.trim()) {
+        planFor(index).push(phrase.text.trim());
+        budget.set(index, remaining - 1);
+      }
+    }
+  }
+
+  // 2. Generic skill round-robin fills any leftover budget, strongest bullets
+  //    first, emitting in original order so the document is never reordered.
+  if (config.maxInsertionsPerBullet > 0 && missingKeywords.length > 0) {
+    const queue = [...missingKeywords];
+    const orderedTargets = [...params.bullets]
       .map((bullet, index) => ({ bullet, index }))
-      .filter(({ bullet }) => eligibleSections.includes(bullet.section) && !isProtected(bullet.text))
+      .filter(({ index }) => isEligible(index))
       .sort((a, b) => b.bullet.score - a.bullet.score)
-      .map(({ index }) => index),
-  );
+      .map(({ index }) => index);
+
+    for (const index of orderedTargets) {
+      let remaining = budget.get(index) ?? 0;
+      while (remaining > 0 && queue.length > 0) {
+        planFor(index).push(queue.shift() as string);
+        remaining -= 1;
+      }
+      budget.set(index, remaining);
+    }
+  }
 
   const bullets = params.bullets.map((bullet, index) => {
     if (isProtected(bullet.text)) {
@@ -186,23 +233,20 @@ export async function enrichContent(params: {
       }
     }
 
-    if (targetIds.has(index) && config.maxInsertionsPerBullet > 0 && queue.length > 0) {
-      const take = queue.splice(0, config.maxInsertionsPerBullet);
-      for (const keyword of take) {
-        const original = next;
-        const candidate = insertKeywordGrammatically(next, keyword);
-        // Anti-fabrication post-filter: a rewrite must not introduce a protected
-        // claim (number, date, employer, credential, etc.) that was not already
-        // present in the original text.
-        if (candidate !== original && !introducesProtectedClaim(original, candidate)) {
-          expansions.push({
-            claim_type: 'skill',
-            original_text: original,
-            expanded_text: candidate,
-            basis: `Aligned with target role keyword: ${keyword}.`,
-          });
-          next = candidate;
-        }
+    for (const keyword of planFor(index)) {
+      const original = next;
+      const candidate = insertKeywordGrammatically(next, keyword);
+      // Anti-fabrication post-filter: a rewrite must not introduce a protected
+      // claim (number, date, employer, credential, etc.) that was not already
+      // present in the original text.
+      if (candidate !== original && !introducesProtectedClaim(original, candidate)) {
+        expansions.push({
+          claim_type: 'skill',
+          original_text: original,
+          expanded_text: candidate,
+          basis: `Aligned with target role keyword: ${keyword}.`,
+        });
+        next = candidate;
       }
     }
 

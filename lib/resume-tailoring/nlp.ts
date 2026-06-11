@@ -94,6 +94,45 @@ export function nounTokens(sentence: string): string[] {
 }
 
 /**
+ * Approximate noun-phrase chunking: returns runs of adjective/noun/proper-noun
+ * tokens (e.g. "event-driven architecture", "distributed systems"). The lite
+ * model has no dedicated chunker, so we group consecutive ADJ|NOUN|PROPN tags.
+ * Returns lower-cased phrases. Empty array when the model is unavailable so
+ * callers can fall back to a deterministic miner.
+ */
+export function nounPhrases(text: string): string[] {
+  const nlp = getNlp();
+  if (!nlp) return [];
+  try {
+    const doc = nlp.readDoc(text);
+    const tokens = doc.tokens().out();
+    const tags = doc.tokens().out(nlp.its.pos);
+    const phrases: string[] = [];
+    let current: string[] = [];
+    const flush = () => {
+      if (current.length > 0) {
+        phrases.push(current.join(' ').toLowerCase());
+        current = [];
+      }
+    };
+    for (let i = 0; i < tags.length; i += 1) {
+      const tag = tags[i];
+      const token = tokens[i];
+      // Allow internal hyphens/slashes (event-driven, CI/CD) to stay attached.
+      if (tag === 'ADJ' || tag === 'NOUN' || tag === 'PROPN') {
+        current.push(token);
+      } else {
+        flush();
+      }
+    }
+    flush();
+    return phrases;
+  } catch {
+    return [];
+  }
+}
+
+/**
  * Swap a weak leading verb (made/worked/used…) for a stronger preferred verb
  * when the sentence actually starts with one. Returns the original sentence if
  * no safe substitution applies (or the model is unavailable).
