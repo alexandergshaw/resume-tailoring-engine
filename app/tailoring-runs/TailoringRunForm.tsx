@@ -1,7 +1,7 @@
 'use client';
 
 import { useActionState, useEffect, useState } from 'react';
-import { submitTailoringRun, type SubmitState } from './actions';
+import { submitTailoringRun, tailorFromTemplate, type SubmitState } from './actions';
 
 const initialState: SubmitState = {};
 
@@ -28,6 +28,7 @@ function loadDraft(): Draft {
 
 export default function TailoringRunForm() {
   const [state, formAction, pending] = useActionState(submitTailoringRun, initialState);
+  const [templateState, templateAction, templatePending] = useActionState(tailorFromTemplate, initialState);
   const [draft, setDraft] = useState<Draft>(DEFAULT_DRAFT);
   const [hydrated, setHydrated] = useState(false);
 
@@ -48,9 +49,9 @@ export default function TailoringRunForm() {
     }
   }, [draft, hydrated]);
 
-  // Clear the saved draft once a run is successfully submitted.
+  // Clear the saved draft once either flow successfully produces a run.
   useEffect(() => {
-    if (!hydrated || !state.runId) return;
+    if (!hydrated || !(state.runId || templateState.runId)) return;
     try {
       window.localStorage.removeItem(STORAGE_KEY);
     } catch {
@@ -58,7 +59,7 @@ export default function TailoringRunForm() {
     }
     // eslint-disable-next-line react-hooks/set-state-in-effect -- reset the controlled form after a successful submit.
     setDraft(DEFAULT_DRAFT);
-  }, [state.runId, hydrated]);
+  }, [state.runId, templateState.runId, hydrated]);
 
   return (
     <>
@@ -98,6 +99,38 @@ export default function TailoringRunForm() {
       {state.runId && (
         <p>
           Run queued: <a href={`/tailoring-runs/${state.runId}`}>{state.runId}</a> ({state.status})
+        </p>
+      )}
+
+      <hr />
+
+      <form action={templateAction}>
+        <p>
+          <label>
+            Resume template (.docx):{' '}
+            <input name="template_file" type="file" accept=".docx" required />
+          </label>
+        </p>
+        <p>
+          <textarea
+            name="job_posting_text"
+            placeholder="Paste job posting"
+            rows={10}
+            cols={80}
+            required
+            value={draft.jobPostingText}
+            onChange={(event) => setDraft((prev) => ({ ...prev, jobPostingText: event.target.value }))}
+          />
+        </p>
+        <button type="submit" disabled={templatePending}>
+          {templatePending ? 'Tailoring…' : 'Tailor from Template'}
+        </button>
+      </form>
+      {templateState.error && <p style={{ color: '#b00020' }}>Error: {templateState.error}</p>}
+      {templateState.runId && (
+        <p>
+          Template tailored: <a href={`/tailoring-runs/${templateState.runId}/download`}>Download DOCX</a> (
+          {templateState.status})
         </p>
       )}
     </>

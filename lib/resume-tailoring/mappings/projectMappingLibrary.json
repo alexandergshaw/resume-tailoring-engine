@@ -1,0 +1,796 @@
+{
+  "project_section_mapping_library": {
+    "version": "1.0",
+    "purpose": "Map job posting buzzwords to deterministic resume project-name components ({{PROJECT_SCOPE}}, {{PROJECT_TYPE}}, {{PRIMARY_CAPABILITY}}, {{STRATEGIC_OUTCOME}}) and project bullet fragments for tailored resume generation. Employers are fixed (Mutual of Omaha, Metropolitan College, Metropolitan College); only descriptive wording is selected from these mappings.",
+    "project_model": {
+      "name_components": "Word banks for the project-title slots: {{PROJECT_SCOPE}} {{PROJECT_TYPE}}: {{PRIMARY_CAPABILITY}} & {{STRATEGIC_OUTCOME}}.",
+      "bullet_fragments": "Phrase banks keyed to each {{PLACEHOLDER}} used in the project bullets. The Mutual of Omaha project uses the 'designed_and_implemented' bullet shape; the two Metropolitan College projects use the 'modernized' bullet shape.",
+      "mapping_priority": "How strongly this mapping should be emphasized when matching a posting.",
+      "enabled_when": "Rules for deciding whether the mapping contributes to the project section."
+    },
+    "fixed_anchors": {
+      "project_slots": [
+        {
+          "slot": "project1",
+          "employer": "Mutual of Omaha",
+          "bullet_shape": "designed_and_implemented",
+          "bullet_template": "Designed and implemented {{PROJECT_SOLUTION}} using {{JOB_RELEVANT_TECHNOLOGIES}}, enabling {{NEW_CAPABILITY}} and delivering {{MEASURABLE_IMPACT}}."
+        },
+        {
+          "slot": "project2",
+          "employer": "Metropolitan College",
+          "bullet_shape": "modernized",
+          "bullet_template": "Modernized {{EXISTING_SYSTEM_OR_PROCESS}} through {{TECHNICAL_APPROACH}}, improving {{PERFORMANCE_OR_BUSINESS_METRIC}} by {{MEASURABLE_IMPACT}}."
+        },
+        {
+          "slot": "project3",
+          "employer": "Metropolitan College",
+          "bullet_shape": "modernized",
+          "bullet_template": "Modernized {{EXISTING_SYSTEM_OR_PROCESS}} through {{TECHNICAL_APPROACH}}, improving {{PERFORMANCE_OR_BUSINESS_METRIC}} by {{MEASURABLE_IMPACT}}."
+        }
+      ]
+    },
+    "protected_rules": {
+      "never_insert_without_profile_evidence": [
+        "programming languages",
+        "frameworks",
+        "cloud platforms",
+        "databases",
+        "security tools",
+        "healthcare standards",
+        "specific employer-named systems"
+      ],
+      "allowed_to_generalize": [
+        "application modernization",
+        "workflow improvement",
+        "reusable architecture",
+        "automation",
+        "documentation",
+        "technical instruction",
+        "data analysis",
+        "systems integration"
+      ],
+      "preserve_aliases_if_posting_uses_them": true,
+      "measurable_impact_must_be_plausible": "Quantified impacts must be realistic and consistent with the candidate's profile scale."
+    },
+    "shared_scope_terms": [
+      "Enterprise",
+      "Cross-Team",
+      "Internal",
+      "Department-Wide",
+      "Organization-Wide"
+    ],
+    "mappings": [
+      {
+        "id": "software_engineering_core",
+        "buzzwords": [
+          "software engineer",
+          "software developer",
+          "application developer",
+          "software development",
+          "application development",
+          "SDLC",
+          "enterprise applications",
+          "application architecture"
+        ],
+        "mapping_priority": 90,
+        "name_components": {
+          "project_type_options": [
+            "Application Platform",
+            "Software Modernization",
+            "Internal Application"
+          ],
+          "primary_capability_options": [
+            "Enterprise Application Delivery",
+            "Application Architecture",
+            "Solution Design"
+          ],
+          "strategic_outcome_options": [
+            "Operational Efficiency",
+            "Reduced Technical Debt",
+            "Faster Delivery"
+          ]
+        },
+        "bullet_fragments": {
+          "project_solution": [
+            "an enterprise application platform",
+            "a suite of internal business applications",
+            "a modernized application stack"
+          ],
+          "job_relevant_technologies": [
+            "modern application frameworks",
+            "enterprise development tooling"
+          ],
+          "new_capability": [
+            "standardized application delivery",
+            "consolidated business workflows",
+            "self-service internal tooling"
+          ],
+          "measurable_impact": [
+            "measurable reductions in processing time",
+            "double-digit efficiency gains",
+            "faster release cycles"
+          ],
+          "existing_system_or_process": [
+            "a legacy application workflow",
+            "a manual business process",
+            "an outdated internal system"
+          ],
+          "technical_approach": [
+            "application modernization",
+            "workflow automation",
+            "architecture refactoring"
+          ],
+          "performance_or_business_metric": [
+            "processing time",
+            "operational efficiency",
+            "delivery throughput"
+          ]
+        }
+      },
+      {
+        "id": "frontend_engineering",
+        "buzzwords": [
+          "frontend",
+          "front-end",
+          "UI",
+          "user interface",
+          "React",
+          "JavaScript",
+          "TypeScript",
+          "component library",
+          "design system",
+          "responsive design",
+          "SPA",
+          "accessibility"
+        ],
+        "mapping_priority": 95,
+        "name_components": {
+          "project_type_options": [
+            "Component Library",
+            "UI Modernization",
+            "Web Application"
+          ],
+          "primary_capability_options": [
+            "Reusable Frontend Architecture",
+            "Responsive Interface Delivery",
+            "Design System Development"
+          ],
+          "strategic_outcome_options": [
+            "Consistent User Experience",
+            "Faster UI Delivery",
+            "Reduced Frontend Duplication"
+          ]
+        },
+        "bullet_fragments": {
+          "project_solution": [
+            "a reusable React component library",
+            "a responsive enterprise web interface",
+            "a shared design system"
+          ],
+          "job_relevant_technologies": [
+            "React",
+            "TypeScript",
+            "modern frontend tooling"
+          ],
+          "new_capability": [
+            "consistent UI across products",
+            "rapid interface assembly",
+            "reusable frontend patterns"
+          ],
+          "measurable_impact": [
+            "reduced UI development time",
+            "improved interface consistency",
+            "faster feature rollout"
+          ],
+          "existing_system_or_process": [
+            "a fragmented legacy interface",
+            "duplicated frontend code",
+            "an inconsistent UI codebase"
+          ],
+          "technical_approach": [
+            "component-based refactoring",
+            "design system adoption",
+            "responsive redesign"
+          ],
+          "performance_or_business_metric": [
+            "UI development time",
+            "interface consistency",
+            "frontend code reuse"
+          ]
+        }
+      },
+      {
+        "id": "backend_api_engineering",
+        "buzzwords": [
+          "backend",
+          "back-end",
+          "API",
+          "REST API",
+          "services",
+          "service layer",
+          "Spring Boot",
+          "Java",
+          "microservices",
+          "integration services"
+        ],
+        "mapping_priority": 95,
+        "name_components": {
+          "project_type_options": [
+            "API Platform",
+            "Backend Services Initiative",
+            "Integration Layer"
+          ],
+          "primary_capability_options": [
+            "REST API Delivery",
+            "Service Layer Architecture",
+            "Systems Integration"
+          ],
+          "strategic_outcome_options": [
+            "Improved Interoperability",
+            "Reduced Integration Overhead",
+            "Higher Backend Reliability"
+          ]
+        },
+        "bullet_fragments": {
+          "project_solution": [
+            "a REST API platform",
+            "a backend service layer",
+            "an enterprise integration workflow"
+          ],
+          "job_relevant_technologies": [
+            "Java",
+            "Spring Boot",
+            "REST APIs"
+          ],
+          "new_capability": [
+            "standardized system-to-system integration",
+            "centralized business logic",
+            "reliable data exchange"
+          ],
+          "measurable_impact": [
+            "reduced integration time",
+            "improved API reliability",
+            "higher transaction throughput"
+          ],
+          "existing_system_or_process": [
+            "a point-to-point integration",
+            "a manual data exchange process",
+            "a fragmented service layer"
+          ],
+          "technical_approach": [
+            "API-based integration",
+            "service consolidation",
+            "backend refactoring"
+          ],
+          "performance_or_business_metric": [
+            "integration time",
+            "API reliability",
+            "data exchange throughput"
+          ]
+        }
+      },
+      {
+        "id": "full_stack_engineering",
+        "buzzwords": [
+          "full stack",
+          "full-stack",
+          "end-to-end development",
+          "web application",
+          "React",
+          "API",
+          "SQL",
+          "database",
+          "feature development"
+        ],
+        "mapping_priority": 100,
+        "name_components": {
+          "project_type_options": [
+            "Full Stack Application",
+            "End-to-End Platform",
+            "Web Application"
+          ],
+          "primary_capability_options": [
+            "End-to-End Feature Delivery",
+            "Full Stack Development",
+            "API-Backed Workflows"
+          ],
+          "strategic_outcome_options": [
+            "Faster Delivery",
+            "Reduced Handoff Friction",
+            "Improved Feature Throughput"
+          ]
+        },
+        "bullet_fragments": {
+          "project_solution": [
+            "a full-stack web application",
+            "an end-to-end feature set",
+            "an API-backed user workflow"
+          ],
+          "job_relevant_technologies": [
+            "React",
+            "REST APIs",
+            "SQL"
+          ],
+          "new_capability": [
+            "complete features from UI to database",
+            "unified frontend and backend delivery",
+            "self-service user workflows"
+          ],
+          "measurable_impact": [
+            "faster feature turnaround",
+            "reduced delivery cycle time",
+            "increased release frequency"
+          ],
+          "existing_system_or_process": [
+            "a fragmented multi-team workflow",
+            "a manual end-to-end process",
+            "a legacy web application"
+          ],
+          "technical_approach": [
+            "end-to-end re-architecture",
+            "full-stack consolidation",
+            "API-backed redesign"
+          ],
+          "performance_or_business_metric": [
+            "feature turnaround time",
+            "delivery cycle time",
+            "release frequency"
+          ]
+        }
+      },
+      {
+        "id": "data_analysis_reporting",
+        "buzzwords": [
+          "data analyst",
+          "analytics",
+          "data analysis",
+          "reporting",
+          "dashboard",
+          "visualization",
+          "KPI",
+          "metrics",
+          "business intelligence",
+          "BI",
+          "operational reporting"
+        ],
+        "mapping_priority": 88,
+        "name_components": {
+          "project_type_options": [
+            "Reporting Platform",
+            "Analytics Dashboard",
+            "Operational Insights Initiative"
+          ],
+          "primary_capability_options": [
+            "Operational Reporting",
+            "Data Visualization",
+            "Business Intelligence Enablement"
+          ],
+          "strategic_outcome_options": [
+            "Data-Driven Decisions",
+            "Improved Visibility",
+            "Faster Insights"
+          ]
+        },
+        "bullet_fragments": {
+          "project_solution": [
+            "an operational reporting dashboard",
+            "a set of KPI views",
+            "a self-service analytics layer"
+          ],
+          "job_relevant_technologies": [
+            "SQL",
+            "reporting and visualization tooling"
+          ],
+          "new_capability": [
+            "self-service access to operational metrics",
+            "real-time visibility into KPIs",
+            "centralized reporting"
+          ],
+          "measurable_impact": [
+            "reduced manual reporting effort",
+            "faster access to insights",
+            "improved metric accuracy"
+          ],
+          "existing_system_or_process": [
+            "a manual reporting process",
+            "scattered spreadsheet reports",
+            "an ad-hoc metrics workflow"
+          ],
+          "technical_approach": [
+            "automated reporting pipelines",
+            "dashboard development",
+            "data consolidation"
+          ],
+          "performance_or_business_metric": [
+            "reporting turnaround time",
+            "manual reporting effort",
+            "metric accuracy"
+          ]
+        }
+      },
+      {
+        "id": "business_systems_analysis",
+        "buzzwords": [
+          "business analyst",
+          "systems analyst",
+          "requirements",
+          "workflow analysis",
+          "process mapping",
+          "process improvement",
+          "stakeholders",
+          "UAT",
+          "user stories"
+        ],
+        "mapping_priority": 92,
+        "name_components": {
+          "project_type_options": [
+            "Process Improvement Initiative",
+            "Workflow Modernization",
+            "Systems Analysis Effort"
+          ],
+          "primary_capability_options": [
+            "Requirements & Workflow Analysis",
+            "Process Mapping",
+            "Stakeholder Alignment"
+          ],
+          "strategic_outcome_options": [
+            "Reduced Rework",
+            "Streamlined Operations",
+            "Improved Delivery Predictability"
+          ]
+        },
+        "bullet_fragments": {
+          "project_solution": [
+            "a documented requirements and workflow framework",
+            "a mapped operational process",
+            "a stakeholder-aligned delivery plan"
+          ],
+          "job_relevant_technologies": [
+            "requirements and documentation tooling",
+            "workflow modeling tools"
+          ],
+          "new_capability": [
+            "clearer requirement traceability",
+            "streamlined operational workflows",
+            "reduced ambiguity in delivery"
+          ],
+          "measurable_impact": [
+            "reduced rework and change requests",
+            "faster requirement sign-off",
+            "improved delivery predictability"
+          ],
+          "existing_system_or_process": [
+            "an undocumented business workflow",
+            "an inefficient operational process",
+            "a manual handoff process"
+          ],
+          "technical_approach": [
+            "process mapping and analysis",
+            "requirements documentation",
+            "workflow redesign"
+          ],
+          "performance_or_business_metric": [
+            "rework volume",
+            "requirement sign-off time",
+            "delivery predictability"
+          ]
+        }
+      },
+      {
+        "id": "platform_engineering",
+        "buzzwords": [
+          "platform",
+          "platform engineering",
+          "internal platform",
+          "developer platform",
+          "internal tools",
+          "shared services",
+          "reusable components",
+          "developer experience",
+          "self-service",
+          "standardization",
+          "engineering productivity"
+        ],
+        "mapping_priority": 93,
+        "name_components": {
+          "project_type_options": [
+            "Internal Platform",
+            "Developer Enablement Initiative",
+            "Shared Services Platform"
+          ],
+          "primary_capability_options": [
+            "Reusable Architecture",
+            "Developer Enablement",
+            "Engineering Productivity"
+          ],
+          "strategic_outcome_options": [
+            "Accelerated Delivery",
+            "Standardized Workflows",
+            "Improved Developer Experience"
+          ]
+        },
+        "bullet_fragments": {
+          "project_solution": [
+            "an internal developer platform",
+            "a set of reusable shared services",
+            "a self-service tooling suite"
+          ],
+          "job_relevant_technologies": [
+            "modern application frameworks",
+            "internal platform tooling"
+          ],
+          "new_capability": [
+            "self-service application setup",
+            "standardized engineering workflows",
+            "reusable architecture across teams"
+          ],
+          "measurable_impact": [
+            "reduced application setup time",
+            "faster team onboarding",
+            "improved engineering productivity"
+          ],
+          "existing_system_or_process": [
+            "a fragmented set of internal tools",
+            "manual application setup",
+            "duplicated engineering effort"
+          ],
+          "technical_approach": [
+            "platform consolidation",
+            "reusable component development",
+            "workflow standardization"
+          ],
+          "performance_or_business_metric": [
+            "application setup time",
+            "developer onboarding time",
+            "engineering productivity"
+          ]
+        }
+      },
+      {
+        "id": "cloud_platform",
+        "buzzwords": [
+          "cloud",
+          "AWS",
+          "Azure",
+          "GCP",
+          "cloud infrastructure",
+          "deployment",
+          "container",
+          "Docker",
+          "Kubernetes",
+          "scalability",
+          "infrastructure automation"
+        ],
+        "mapping_priority": 90,
+        "name_components": {
+          "project_type_options": [
+            "Cloud Migration",
+            "Platform Modernization",
+            "Infrastructure Initiative"
+          ],
+          "primary_capability_options": [
+            "Cloud Application Delivery",
+            "Scalable Infrastructure",
+            "Deployment Automation"
+          ],
+          "strategic_outcome_options": [
+            "Improved Scalability",
+            "Faster Deployments",
+            "Reduced Infrastructure Cost"
+          ]
+        },
+        "bullet_fragments": {
+          "project_solution": [
+            "a cloud-aligned application platform",
+            "automated deployment workflows",
+            "a scalable infrastructure foundation"
+          ],
+          "job_relevant_technologies": [
+            "cloud platforms",
+            "containerization tooling"
+          ],
+          "new_capability": [
+            "elastic scalability",
+            "automated deployments",
+            "resilient infrastructure"
+          ],
+          "measurable_impact": [
+            "faster deployment cycles",
+            "improved uptime",
+            "reduced infrastructure cost"
+          ],
+          "existing_system_or_process": [
+            "a legacy on-premises system",
+            "a manual deployment process",
+            "an unscalable infrastructure setup"
+          ],
+          "technical_approach": [
+            "cloud migration",
+            "deployment automation",
+            "infrastructure modernization"
+          ],
+          "performance_or_business_metric": [
+            "deployment cycle time",
+            "system uptime",
+            "infrastructure cost"
+          ]
+        }
+      },
+      {
+        "id": "curriculum_design",
+        "buzzwords": [
+          "curriculum",
+          "course development",
+          "instructional design",
+          "lesson planning",
+          "assessment",
+          "rubric",
+          "learning objectives",
+          "course outcomes",
+          "project-based learning",
+          "instructional materials"
+        ],
+        "mapping_priority": 95,
+        "preferred_slots": [
+          "project2",
+          "project3"
+        ],
+        "name_components": {
+          "project_type_options": [
+            "Curriculum Redesign",
+            "Course Modernization",
+            "Learning Experience Initiative"
+          ],
+          "primary_capability_options": [
+            "Curriculum Development",
+            "Instructional Design",
+            "Project-Based Learning"
+          ],
+          "strategic_outcome_options": [
+            "Improved Student Outcomes",
+            "Higher Engagement",
+            "Modernized Coursework"
+          ]
+        },
+        "bullet_fragments": {
+          "project_solution": [
+            "a modernized project-based curriculum",
+            "a redesigned technical course series",
+            "an updated assessment framework"
+          ],
+          "job_relevant_technologies": [
+            "learning management systems",
+            "instructional design tooling"
+          ],
+          "new_capability": [
+            "hands-on applied learning",
+            "industry-aligned coursework",
+            "scalable assessment"
+          ],
+          "measurable_impact": [
+            "improved student completion rates",
+            "higher student engagement",
+            "stronger learning outcomes"
+          ],
+          "existing_system_or_process": [
+            "an outdated course curriculum",
+            "a lecture-heavy course format",
+            "a legacy assessment approach"
+          ],
+          "technical_approach": [
+            "project-based redesign",
+            "industry-aligned curriculum updates",
+            "modernized assessment design"
+          ],
+          "performance_or_business_metric": [
+            "student completion rates",
+            "student engagement",
+            "learning outcomes"
+          ]
+        }
+      },
+      {
+        "id": "education_instruction",
+        "buzzwords": [
+          "instructor",
+          "teacher",
+          "faculty",
+          "adjunct",
+          "teaching",
+          "training",
+          "student",
+          "online instruction",
+          "LMS",
+          "technical training"
+        ],
+        "mapping_priority": 90,
+        "preferred_slots": [
+          "project2",
+          "project3"
+        ],
+        "name_components": {
+          "project_type_options": [
+            "Technical Course",
+            "Instructional Program",
+            "Student Learning Initiative"
+          ],
+          "primary_capability_options": [
+            "Technical Instruction",
+            "Applied Learning",
+            "Student Enablement"
+          ],
+          "strategic_outcome_options": [
+            "Improved Student Readiness",
+            "Higher Engagement",
+            "Stronger Technical Skills"
+          ]
+        },
+        "bullet_fragments": {
+          "project_solution": [
+            "an applied technical course",
+            "a project-based instructional program",
+            "a hands-on lab curriculum"
+          ],
+          "job_relevant_technologies": [
+            "learning management systems",
+            "online collaboration platforms"
+          ],
+          "new_capability": [
+            "applied hands-on learning",
+            "industry-relevant skill building",
+            "scalable online instruction"
+          ],
+          "measurable_impact": [
+            "improved student readiness",
+            "higher engagement across 100+ students per term",
+            "stronger demonstrated technical skills"
+          ],
+          "existing_system_or_process": [
+            "a lecture-only course format",
+            "an outdated instructional approach",
+            "a low-engagement course"
+          ],
+          "technical_approach": [
+            "project-based instruction",
+            "applied learning activities",
+            "modernized course delivery"
+          ],
+          "performance_or_business_metric": [
+            "student engagement",
+            "student readiness",
+            "course completion"
+          ]
+        }
+      }
+    ],
+    "selection_logic": {
+      "score_formula": {
+        "exact_buzzword_match": 5,
+        "alias_match": 3,
+        "job_title_match": 6,
+        "required_skill_match": 8,
+        "preferred_skill_match": 4,
+        "resume_evidence_match": 6,
+        "domain_match": 4,
+        "protected_claim_conflict": -100
+      },
+      "minimum_score_to_activate_mapping": 10,
+      "slot_assignment_rules": [
+        "project1 (Mutual of Omaha) uses the highest-scoring technical/engineering mapping and the 'designed_and_implemented' bullet shape",
+        "project2 and project3 (Metropolitan College) prefer mappings whose preferred_slots include project2/project3 (e.g. curriculum_design, education_instruction); if a posting is purely technical, the next-highest-scoring technical mappings may be used with the 'modernized' bullet shape",
+        "do not assign the same mapping to more than one slot unless fewer than three mappings activate",
+        "project names are assembled as: {{PROJECT_SCOPE}} (from shared_scope_terms) + {{PROJECT_TYPE}} + ': ' + {{PRIMARY_CAPABILITY}} + ' & ' + {{STRATEGIC_OUTCOME}}, all chosen from the assigned mapping's options"
+      ],
+      "bullet_fill_rules": {
+        "source": "bullet_fragments from the mapping assigned to that slot, matching the slot's bullet_shape",
+        "use_job_posting_alias_when_available": true,
+        "fallback_to_canonical_name": true,
+        "measurable_impact_must_be_plausible": true,
+        "deduplicate_fragments": true,
+        "one_fragment_per_placeholder": true
+      },
+      "prefer_posting_language_aliases": true
+    }
+  }
+}

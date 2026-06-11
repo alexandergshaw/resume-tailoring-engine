@@ -1,0 +1,1145 @@
+{
+  "experience_section_mapping_library": {
+    "version": "1.0",
+    "purpose": "Map job posting buzzwords to deterministic resume job-title components (rank, specialization, function, areas of emphasis) and professional-experience bullet fragments for tailored resume generation. Employers, dates, and quantitative anchors (10,000+ users, 75,000+ daily events, team of 5) are fixed; only descriptive wording is selected from these mappings.",
+    "experience_model": {
+      "rank_terms": "Seniority words used for the {{Top Rank}}, {{Medium Rank}}, and {{Low Rank}} title slots. Top describes the most recent Mutual of Omaha role, Medium the prior Mutual of Omaha role, Low the Union Pacific role.",
+      "title_components": "Word banks for the {{Specialization}}, {{Function}}, and {{Areas of Emphasis}} title slots.",
+      "bullet_fragments": "Phrase banks keyed to each {{PLACEHOLDER}} that appears in the professional-experience bullets.",
+      "mapping_priority": "How strongly this mapping should be emphasized when matching a posting.",
+      "enabled_when": "Rules for deciding whether the mapping contributes to the experience section."
+    },
+    "fixed_anchors": {
+      "employers_and_dates": [
+        "Mutual of Omaha | July 2023 (Top Rank role)",
+        "Metropolitan College | Mar 2023 (Adjunct Professor, fixed)",
+        "Mutual of Omaha | May 2022 to July 2023 (Medium Rank role)",
+        "Union Pacific | May 2019 to May 2022 (Low Rank role)"
+      ],
+      "protected_metrics": [
+        "10,000+ internal users",
+        "75,000+ daily operational events",
+        "engineering team of 5 developers",
+        "100+ students per term",
+        "8+ project-based courses"
+      ]
+    },
+    "protected_rules": {
+      "never_insert_without_profile_evidence": [
+        "programming languages",
+        "frameworks",
+        "cloud platforms",
+        "databases",
+        "security tools",
+        "healthcare standards",
+        "certifications",
+        "specific employer-named systems"
+      ],
+      "allowed_to_generalize": [
+        "technical leadership",
+        "stakeholder communication",
+        "requirements gathering",
+        "troubleshooting",
+        "documentation",
+        "workflow improvement",
+        "application modernization",
+        "technical instruction",
+        "systems analysis",
+        "delivery coordination"
+      ],
+      "preserve_aliases_if_posting_uses_them": true,
+      "rank_consistency": "job1 (Top) must outrank job2 (Medium) which must outrank job3 (Low)."
+    },
+    "shared_rank_terms": {
+      "top": [
+        "Senior",
+        "Lead",
+        "Principal",
+        "Staff"
+      ],
+      "medium": [
+        "Software",
+        "Application",
+        "Mid-Level",
+        "Intermediate"
+      ],
+      "low": [
+        "Associate",
+        "Junior",
+        "Entry-Level"
+      ]
+    },
+    "mappings": [
+      {
+        "id": "software_engineering_core",
+        "buzzwords": [
+          "software engineer",
+          "software developer",
+          "application developer",
+          "application engineer",
+          "software development",
+          "application development",
+          "SDLC",
+          "debugging",
+          "programming",
+          "technical design",
+          "enterprise applications",
+          "application architecture"
+        ],
+        "mapping_priority": 90,
+        "title_components": {
+          "specialization_options": [
+            "Software",
+            "Application",
+            "Enterprise Application"
+          ],
+          "function_options": [
+            "Engineer",
+            "Developer"
+          ],
+          "areas_of_emphasis_options": [
+            "Enterprise Applications",
+            "Application Architecture",
+            "Solution Design",
+            "Full Lifecycle Development"
+          ]
+        },
+        "bullet_fragments": {
+          "initiative_type": [
+            "enterprise application development",
+            "software modernization",
+            "platform development"
+          ],
+          "job_relevant_solutions": [
+            "enterprise applications",
+            "internal business applications",
+            "mission-critical software systems"
+          ],
+          "technical_capabilities": [
+            "technical solution design",
+            "application architecture",
+            "full software development lifecycle execution"
+          ],
+          "strategic_outcomes": [
+            "improved system reliability",
+            "accelerated feature delivery",
+            "reduced technical debt"
+          ],
+          "action_verbs": [
+            "Architected",
+            "Engineered",
+            "Built",
+            "Delivered"
+          ],
+          "solution_or_initiative": [
+            "an enterprise application platform",
+            "a suite of internal business applications",
+            "a modernized application stack"
+          ],
+          "technical_or_business_result": [
+            "streamlined core business workflows",
+            "consolidated fragmented systems",
+            "improved application performance"
+          ],
+          "job_relevant_technologies": [
+            "modern application frameworks",
+            "enterprise development tooling"
+          ],
+          "measurable_impact": [
+            "double-digit reductions in processing time",
+            "measurable gains in operational efficiency",
+            "faster release cycles"
+          ],
+          "scope_or_stakeholders": [
+            "multiple business units",
+            "enterprise stakeholders",
+            "cross-functional product teams"
+          ]
+        }
+      },
+      {
+        "id": "frontend_engineering",
+        "buzzwords": [
+          "frontend",
+          "front-end",
+          "UI",
+          "user interface",
+          "React",
+          "React.js",
+          "JavaScript",
+          "TypeScript",
+          "HTML",
+          "CSS",
+          "SCSS",
+          "component library",
+          "design system",
+          "responsive design",
+          "single page application",
+          "SPA",
+          "accessibility"
+        ],
+        "mapping_priority": 95,
+        "title_components": {
+          "specialization_options": [
+            "Frontend",
+            "UI",
+            "Web Application"
+          ],
+          "function_options": [
+            "Engineer",
+            "Developer"
+          ],
+          "areas_of_emphasis_options": [
+            "React",
+            "Reusable Component Libraries",
+            "Responsive Interfaces",
+            "Frontend Architecture"
+          ]
+        },
+        "bullet_fragments": {
+          "initiative_type": [
+            "frontend application development",
+            "UI modernization",
+            "component library development"
+          ],
+          "job_relevant_solutions": [
+            "React-based web applications",
+            "reusable component libraries",
+            "enterprise user interfaces"
+          ],
+          "technical_capabilities": [
+            "frontend architecture",
+            "responsive interface design",
+            "reusable UI patterns"
+          ],
+          "strategic_outcomes": [
+            "improved user experience consistency",
+            "faster UI delivery",
+            "reduced frontend duplication"
+          ],
+          "action_verbs": [
+            "Built",
+            "Engineered",
+            "Modernized",
+            "Standardized"
+          ],
+          "solution_or_initiative": [
+            "a React-based component library",
+            "a responsive enterprise web interface",
+            "a shared design system"
+          ],
+          "technical_or_business_result": [
+            "unified the frontend experience across products",
+            "eliminated redundant UI code",
+            "accelerated feature rollout"
+          ],
+          "job_relevant_technologies": [
+            "React",
+            "TypeScript",
+            "modern frontend tooling"
+          ],
+          "measurable_impact": [
+            "reduced UI development time",
+            "improved interface consistency across applications",
+            "faster page rendering"
+          ],
+          "scope_or_stakeholders": [
+            "multiple product teams",
+            "internal application users",
+            "enterprise UI consumers"
+          ]
+        }
+      },
+      {
+        "id": "backend_api_engineering",
+        "buzzwords": [
+          "backend",
+          "back-end",
+          "server-side",
+          "API",
+          "REST API",
+          "RESTful",
+          "services",
+          "backend services",
+          "service layer",
+          "Spring Boot",
+          "Java",
+          "microservices",
+          "business logic",
+          "integration services"
+        ],
+        "mapping_priority": 95,
+        "title_components": {
+          "specialization_options": [
+            "Backend",
+            "API",
+            "Platform"
+          ],
+          "function_options": [
+            "Engineer",
+            "Developer"
+          ],
+          "areas_of_emphasis_options": [
+            "REST APIs",
+            "Backend Services",
+            "Systems Integration",
+            "Service Architecture"
+          ]
+        },
+        "bullet_fragments": {
+          "initiative_type": [
+            "backend service development",
+            "API platform development",
+            "integration engineering"
+          ],
+          "job_relevant_solutions": [
+            "REST APIs",
+            "backend service layers",
+            "integration workflows"
+          ],
+          "technical_capabilities": [
+            "API design",
+            "service layer architecture",
+            "business logic implementation"
+          ],
+          "strategic_outcomes": [
+            "improved system interoperability",
+            "reduced integration overhead",
+            "increased backend reliability"
+          ],
+          "action_verbs": [
+            "Designed",
+            "Engineered",
+            "Implemented",
+            "Integrated"
+          ],
+          "solution_or_initiative": [
+            "a REST API platform",
+            "a backend service layer",
+            "an enterprise integration workflow"
+          ],
+          "technical_or_business_result": [
+            "connected disparate enterprise systems",
+            "centralized core business logic",
+            "improved data exchange reliability"
+          ],
+          "job_relevant_technologies": [
+            "Java",
+            "Spring Boot",
+            "REST APIs"
+          ],
+          "measurable_impact": [
+            "reduced integration time",
+            "improved API response reliability",
+            "higher transaction throughput"
+          ],
+          "scope_or_stakeholders": [
+            "multiple consuming systems",
+            "downstream application teams",
+            "enterprise integration partners"
+          ]
+        }
+      },
+      {
+        "id": "full_stack_engineering",
+        "buzzwords": [
+          "full stack",
+          "full-stack",
+          "frontend and backend",
+          "end-to-end development",
+          "web application",
+          "React",
+          "API",
+          "SQL",
+          "database",
+          "feature development"
+        ],
+        "mapping_priority": 100,
+        "title_components": {
+          "specialization_options": [
+            "Full Stack",
+            "Full-Stack Application"
+          ],
+          "function_options": [
+            "Engineer",
+            "Developer"
+          ],
+          "areas_of_emphasis_options": [
+            "End-to-End Delivery",
+            "React & REST APIs",
+            "SQL-Backed Workflows",
+            "Feature Development"
+          ]
+        },
+        "bullet_fragments": {
+          "initiative_type": [
+            "full-stack application development",
+            "end-to-end feature delivery",
+            "web platform development"
+          ],
+          "job_relevant_solutions": [
+            "full-stack web applications",
+            "API-backed user interfaces",
+            "SQL-driven application workflows"
+          ],
+          "technical_capabilities": [
+            "end-to-end feature development",
+            "frontend and backend integration",
+            "database-backed application design"
+          ],
+          "strategic_outcomes": [
+            "faster end-to-end delivery",
+            "reduced handoff friction",
+            "improved feature throughput"
+          ],
+          "action_verbs": [
+            "Built",
+            "Delivered",
+            "Engineered",
+            "Shipped"
+          ],
+          "solution_or_initiative": [
+            "a full-stack web application",
+            "an end-to-end feature set",
+            "an API-backed user workflow"
+          ],
+          "technical_or_business_result": [
+            "delivered complete features from UI to database",
+            "unified frontend, backend, and data layers",
+            "reduced cross-team dependencies"
+          ],
+          "job_relevant_technologies": [
+            "React",
+            "REST APIs",
+            "SQL"
+          ],
+          "measurable_impact": [
+            "faster feature turnaround",
+            "reduced delivery cycle time",
+            "increased release frequency"
+          ],
+          "scope_or_stakeholders": [
+            "end users and product stakeholders",
+            "cross-functional delivery teams",
+            "multiple business workflows"
+          ]
+        }
+      },
+      {
+        "id": "data_analysis_reporting",
+        "buzzwords": [
+          "data analyst",
+          "analytics",
+          "data analysis",
+          "reporting",
+          "dashboard",
+          "visualization",
+          "KPI",
+          "metrics",
+          "insights",
+          "trend analysis",
+          "business intelligence",
+          "BI",
+          "operational reporting"
+        ],
+        "mapping_priority": 88,
+        "title_components": {
+          "specialization_options": [
+            "Data",
+            "Analytics",
+            "Reporting"
+          ],
+          "function_options": [
+            "Engineer",
+            "Analyst",
+            "Developer"
+          ],
+          "areas_of_emphasis_options": [
+            "Operational Reporting",
+            "Dashboards",
+            "Data Analysis",
+            "Business Intelligence"
+          ]
+        },
+        "bullet_fragments": {
+          "initiative_type": [
+            "operational reporting",
+            "analytics enablement",
+            "data visibility"
+          ],
+          "job_relevant_solutions": [
+            "operational dashboards",
+            "reporting pipelines",
+            "business intelligence views"
+          ],
+          "technical_capabilities": [
+            "data analysis",
+            "dashboard development",
+            "metric and KPI modeling"
+          ],
+          "strategic_outcomes": [
+            "improved decision-making visibility",
+            "faster access to operational metrics",
+            "data-driven prioritization"
+          ],
+          "action_verbs": [
+            "Built",
+            "Developed",
+            "Delivered",
+            "Automated"
+          ],
+          "solution_or_initiative": [
+            "an operational reporting dashboard",
+            "a set of KPI views",
+            "a self-service analytics layer"
+          ],
+          "technical_or_business_result": [
+            "surfaced previously hidden operational trends",
+            "replaced manual reporting",
+            "centralized scattered metrics"
+          ],
+          "job_relevant_technologies": [
+            "SQL",
+            "reporting and visualization tooling"
+          ],
+          "measurable_impact": [
+            "reduced manual reporting effort",
+            "faster turnaround on operational insights",
+            "improved metric accuracy"
+          ],
+          "scope_or_stakeholders": [
+            "business and operations leaders",
+            "cross-functional decision-makers",
+            "operational teams"
+          ]
+        }
+      },
+      {
+        "id": "business_systems_analysis",
+        "buzzwords": [
+          "business analyst",
+          "systems analyst",
+          "requirements",
+          "requirements gathering",
+          "business requirements",
+          "functional requirements",
+          "workflow analysis",
+          "process mapping",
+          "stakeholders",
+          "UAT",
+          "acceptance criteria",
+          "user stories",
+          "process improvement"
+        ],
+        "mapping_priority": 92,
+        "title_components": {
+          "specialization_options": [
+            "Systems",
+            "Business Systems",
+            "Technical"
+          ],
+          "function_options": [
+            "Analyst",
+            "Engineer"
+          ],
+          "areas_of_emphasis_options": [
+            "Requirements & Workflows",
+            "Process Improvement",
+            "Stakeholder Analysis",
+            "Systems Analysis"
+          ]
+        },
+        "bullet_fragments": {
+          "initiative_type": [
+            "requirements-driven delivery",
+            "process improvement",
+            "systems analysis"
+          ],
+          "job_relevant_solutions": [
+            "documented business requirements",
+            "mapped operational workflows",
+            "validated system changes"
+          ],
+          "technical_capabilities": [
+            "requirements gathering",
+            "workflow analysis",
+            "process mapping"
+          ],
+          "strategic_outcomes": [
+            "improved requirement clarity",
+            "reduced rework",
+            "smoother stakeholder alignment"
+          ],
+          "action_verbs": [
+            "Analyzed",
+            "Documented",
+            "Mapped",
+            "Coordinated"
+          ],
+          "solution_or_initiative": [
+            "a requirements and workflow analysis effort",
+            "a process improvement initiative",
+            "a stakeholder alignment program"
+          ],
+          "technical_or_business_result": [
+            "translated business needs into actionable requirements",
+            "streamlined a core operational workflow",
+            "reduced ambiguity in delivery"
+          ],
+          "job_relevant_technologies": [
+            "requirements and documentation tooling",
+            "workflow modeling tools"
+          ],
+          "measurable_impact": [
+            "reduced rework and change requests",
+            "faster requirement sign-off",
+            "improved delivery predictability"
+          ],
+          "scope_or_stakeholders": [
+            "business and technical stakeholders",
+            "cross-functional delivery teams",
+            "operational process owners"
+          ]
+        }
+      },
+      {
+        "id": "technical_leadership",
+        "buzzwords": [
+          "technical lead",
+          "team lead",
+          "leadership",
+          "mentor",
+          "mentorship",
+          "code review",
+          "architecture",
+          "technical direction",
+          "engineering leadership",
+          "cross-functional",
+          "stakeholder alignment",
+          "delivery coordination",
+          "solution design",
+          "peer review"
+        ],
+        "mapping_priority": 96,
+        "title_components": {
+          "specialization_options": [
+            "Lead",
+            "Technical Lead",
+            "Engineering"
+          ],
+          "function_options": [
+            "Engineer",
+            "Lead"
+          ],
+          "areas_of_emphasis_options": [
+            "Technical Leadership",
+            "Mentorship",
+            "Architecture Ownership",
+            "Cross-Functional Delivery"
+          ]
+        },
+        "bullet_fragments": {
+          "initiative_type": [
+            "engineering leadership",
+            "technical direction",
+            "team enablement"
+          ],
+          "job_relevant_solutions": [
+            "team delivery standards",
+            "architecture and design decisions",
+            "code review governance"
+          ],
+          "technical_capabilities": [
+            "technical leadership",
+            "architecture ownership",
+            "developer mentorship"
+          ],
+          "strategic_outcomes": [
+            "improved engineering velocity",
+            "higher code quality",
+            "stronger team capability"
+          ],
+          "action_verbs": [
+            "Led",
+            "Directed",
+            "Mentored",
+            "Drove"
+          ],
+          "solution_or_initiative": [
+            "an engineering team of 5 developers",
+            "the technical direction of a delivery effort",
+            "architecture and code review standards"
+          ],
+          "technical_or_business_result": [
+            "raised engineering quality and consistency",
+            "accelerated team delivery",
+            "reduced production defects"
+          ],
+          "job_relevant_technologies": [
+            "enterprise engineering tooling",
+            "modern development practices"
+          ],
+          "measurable_impact": [
+            "improved delivery velocity",
+            "reduced defect rates",
+            "faster onboarding of new developers"
+          ],
+          "scope_or_stakeholders": [
+            "an engineering team of 5 developers",
+            "cross-functional partners",
+            "engineering and product leadership"
+          ]
+        }
+      },
+      {
+        "id": "management_delivery",
+        "buzzwords": [
+          "manager",
+          "management",
+          "delivery manager",
+          "project management",
+          "program management",
+          "roadmap",
+          "planning",
+          "prioritization",
+          "resource planning",
+          "stakeholder management",
+          "status reporting",
+          "delivery oversight",
+          "team coordination"
+        ],
+        "mapping_priority": 92,
+        "title_components": {
+          "specialization_options": [
+            "Engineering",
+            "Delivery",
+            "Technical"
+          ],
+          "function_options": [
+            "Lead",
+            "Manager"
+          ],
+          "areas_of_emphasis_options": [
+            "Delivery Oversight",
+            "Stakeholder Management",
+            "Roadmap & Planning",
+            "Team Coordination"
+          ]
+        },
+        "bullet_fragments": {
+          "initiative_type": [
+            "delivery management",
+            "program coordination",
+            "cross-team planning"
+          ],
+          "job_relevant_solutions": [
+            "delivery roadmaps",
+            "prioritized backlogs",
+            "coordinated release plans"
+          ],
+          "technical_capabilities": [
+            "delivery oversight",
+            "resource planning",
+            "stakeholder management"
+          ],
+          "strategic_outcomes": [
+            "improved on-time delivery",
+            "clearer prioritization",
+            "reduced delivery risk"
+          ],
+          "action_verbs": [
+            "Led",
+            "Coordinated",
+            "Directed",
+            "Managed"
+          ],
+          "solution_or_initiative": [
+            "cross-team delivery efforts",
+            "a prioritized delivery roadmap",
+            "an engineering team of 5 developers"
+          ],
+          "technical_or_business_result": [
+            "kept critical initiatives on schedule",
+            "aligned stakeholders on priorities",
+            "reduced delivery bottlenecks"
+          ],
+          "job_relevant_technologies": [
+            "delivery tracking tooling",
+            "planning and coordination tools"
+          ],
+          "measurable_impact": [
+            "improved on-time delivery rates",
+            "reduced delivery delays",
+            "higher stakeholder satisfaction"
+          ],
+          "scope_or_stakeholders": [
+            "cross-functional stakeholders",
+            "engineering and product teams",
+            "business leadership"
+          ]
+        }
+      },
+      {
+        "id": "healthcare_integration",
+        "buzzwords": [
+          "healthcare",
+          "health care",
+          "payer",
+          "provider",
+          "claims",
+          "member",
+          "eligibility",
+          "FHIR",
+          "HL7",
+          "CCD",
+          "C-CDA",
+          "interoperability",
+          "health data exchange",
+          "clinical data",
+          "healthcare data",
+          "regulated environment",
+          "HIPAA"
+        ],
+        "mapping_priority": 100,
+        "title_components": {
+          "specialization_options": [
+            "Healthcare Integration",
+            "Healthcare Application",
+            "Enterprise Integration"
+          ],
+          "function_options": [
+            "Engineer",
+            "Developer"
+          ],
+          "areas_of_emphasis_options": [
+            "Healthcare Interoperability",
+            "Payer Workflows",
+            "Health Data Exchange",
+            "Regulated Systems"
+          ]
+        },
+        "bullet_fragments": {
+          "initiative_type": [
+            "healthcare integration",
+            "health data exchange",
+            "payer workflow enablement"
+          ],
+          "job_relevant_solutions": [
+            "healthcare interoperability workflows",
+            "member and eligibility data exchange",
+            "payer integration services"
+          ],
+          "technical_capabilities": [
+            "healthcare data mapping",
+            "API-based integration",
+            "regulated data handling"
+          ],
+          "strategic_outcomes": [
+            "improved data interoperability",
+            "compliant data exchange",
+            "reduced manual data handling"
+          ],
+          "action_verbs": [
+            "Engineered",
+            "Integrated",
+            "Implemented",
+            "Delivered"
+          ],
+          "solution_or_initiative": [
+            "a healthcare data exchange workflow",
+            "a payer integration service",
+            "an interoperability layer"
+          ],
+          "technical_or_business_result": [
+            "enabled compliant exchange of member data",
+            "connected payer and provider systems",
+            "automated regulated data workflows"
+          ],
+          "job_relevant_technologies": [
+            "FHIR",
+            "HL7",
+            "healthcare integration tooling"
+          ],
+          "measurable_impact": [
+            "reduced manual data processing",
+            "faster data exchange turnaround",
+            "improved compliance posture"
+          ],
+          "scope_or_stakeholders": [
+            "payer and provider systems",
+            "compliance and operations teams",
+            "enterprise integration partners"
+          ]
+        }
+      },
+      {
+        "id": "cloud_platform",
+        "buzzwords": [
+          "cloud",
+          "AWS",
+          "Azure",
+          "GCP",
+          "cloud infrastructure",
+          "infrastructure",
+          "platform",
+          "cloud platform",
+          "deployment",
+          "container",
+          "Docker",
+          "Kubernetes",
+          "scalability",
+          "cloud services",
+          "infrastructure automation"
+        ],
+        "mapping_priority": 90,
+        "title_components": {
+          "specialization_options": [
+            "Cloud",
+            "Platform",
+            "Infrastructure"
+          ],
+          "function_options": [
+            "Engineer",
+            "Developer"
+          ],
+          "areas_of_emphasis_options": [
+            "Cloud Application Delivery",
+            "Platform Engineering",
+            "Scalable Infrastructure",
+            "Deployment Automation"
+          ]
+        },
+        "bullet_fragments": {
+          "initiative_type": [
+            "cloud application delivery",
+            "platform modernization",
+            "infrastructure automation"
+          ],
+          "job_relevant_solutions": [
+            "cloud-aligned applications",
+            "scalable platform services",
+            "automated deployment workflows"
+          ],
+          "technical_capabilities": [
+            "cloud infrastructure",
+            "deployment coordination",
+            "scalable platform design"
+          ],
+          "strategic_outcomes": [
+            "improved scalability",
+            "faster deployments",
+            "reduced infrastructure overhead"
+          ],
+          "action_verbs": [
+            "Migrated",
+            "Engineered",
+            "Automated",
+            "Modernized"
+          ],
+          "solution_or_initiative": [
+            "a cloud-aligned application platform",
+            "automated deployment workflows",
+            "a scalable infrastructure foundation"
+          ],
+          "technical_or_business_result": [
+            "improved application scalability and uptime",
+            "reduced manual deployment effort",
+            "modernized legacy infrastructure"
+          ],
+          "job_relevant_technologies": [
+            "cloud platforms",
+            "containerization tooling"
+          ],
+          "measurable_impact": [
+            "faster deployment cycles",
+            "improved system uptime",
+            "reduced infrastructure cost"
+          ],
+          "scope_or_stakeholders": [
+            "enterprise platform consumers",
+            "engineering and operations teams",
+            "multiple application teams"
+          ]
+        }
+      },
+      {
+        "id": "devops_cicd",
+        "buzzwords": [
+          "DevOps",
+          "CI/CD",
+          "continuous integration",
+          "continuous deployment",
+          "pipeline",
+          "Jenkins",
+          "GitHub Actions",
+          "deployment automation",
+          "release management",
+          "build pipeline",
+          "environment management",
+          "automation",
+          "release"
+        ],
+        "mapping_priority": 90,
+        "title_components": {
+          "specialization_options": [
+            "DevOps",
+            "Platform",
+            "Release"
+          ],
+          "function_options": [
+            "Engineer",
+            "Developer"
+          ],
+          "areas_of_emphasis_options": [
+            "CI/CD",
+            "Delivery Automation",
+            "Release Management",
+            "Environment Management"
+          ]
+        },
+        "bullet_fragments": {
+          "initiative_type": [
+            "delivery automation",
+            "CI/CD enablement",
+            "release coordination"
+          ],
+          "job_relevant_solutions": [
+            "CI/CD pipelines",
+            "automated build and release workflows",
+            "environment management processes"
+          ],
+          "technical_capabilities": [
+            "pipeline development",
+            "deployment automation",
+            "release coordination"
+          ],
+          "strategic_outcomes": [
+            "faster and safer releases",
+            "reduced manual deployment work",
+            "improved delivery consistency"
+          ],
+          "action_verbs": [
+            "Automated",
+            "Built",
+            "Streamlined",
+            "Implemented"
+          ],
+          "solution_or_initiative": [
+            "a CI/CD pipeline",
+            "automated release workflows",
+            "standardized deployment processes"
+          ],
+          "technical_or_business_result": [
+            "eliminated manual release steps",
+            "increased deployment frequency",
+            "reduced release failures"
+          ],
+          "job_relevant_technologies": [
+            "CI/CD tooling",
+            "build and deployment automation"
+          ],
+          "measurable_impact": [
+            "faster release cycles",
+            "fewer failed deployments",
+            "reduced release effort"
+          ],
+          "scope_or_stakeholders": [
+            "engineering delivery teams",
+            "multiple application teams",
+            "release and operations stakeholders"
+          ]
+        }
+      },
+      {
+        "id": "education_instruction",
+        "buzzwords": [
+          "instructor",
+          "teacher",
+          "faculty",
+          "adjunct",
+          "education",
+          "teaching",
+          "training",
+          "student",
+          "curriculum",
+          "course design",
+          "online instruction",
+          "LMS",
+          "mentoring",
+          "technical training"
+        ],
+        "mapping_priority": 100,
+        "applies_to": [
+          "adjunct"
+        ],
+        "title_components": {
+          "specialization_options": [
+            "Adjunct"
+          ],
+          "function_options": [
+            "Professor",
+            "Instructor"
+          ],
+          "areas_of_emphasis_options": [
+            "Technical Instruction",
+            "Curriculum Design",
+            "Student Mentoring",
+            "Project-Based Learning"
+          ]
+        },
+        "bullet_fragments": {
+          "course_topics_relevant": [
+            "software development",
+            "web application development",
+            "databases and SQL",
+            "systems analysis",
+            "cybersecurity fundamentals",
+            "cloud and infrastructure concepts",
+            "agile delivery practices",
+            "professional communication",
+            "technical documentation",
+            "problem solving and debugging"
+          ],
+          "people_skill_topics": [
+            "collaboration",
+            "communication",
+            "professional readiness",
+            "teamwork",
+            "presentation skills"
+          ]
+        }
+      }
+    ],
+    "selection_logic": {
+      "score_formula": {
+        "exact_buzzword_match": 5,
+        "alias_match": 3,
+        "job_title_match": 6,
+        "required_skill_match": 8,
+        "preferred_skill_match": 4,
+        "resume_evidence_match": 6,
+        "domain_match": 4,
+        "protected_claim_conflict": -100
+      },
+      "minimum_score_to_activate_mapping": 10,
+      "title_assignment_rules": [
+        "assign the highest-scoring mapping's title_components to job1 (Top Rank) using shared_rank_terms.top",
+        "assign the second highest-scoring engineering/leadership mapping to job2 (Medium Rank) using shared_rank_terms.medium",
+        "assign a foundational mapping (software_engineering_core or full_stack_engineering) to job3 (Low Rank) using shared_rank_terms.low",
+        "the adjunct entry always uses the education_instruction mapping regardless of score",
+        "specialization, function, and areas_of_emphasis are chosen from the assigned mapping's options, preferring posting language"
+      ],
+      "bullet_fill_rules": {
+        "source": "bullet_fragments from the mapping assigned to that job entry",
+        "use_job_posting_alias_when_available": true,
+        "fallback_to_canonical_name": true,
+        "preserve_protected_metrics": true,
+        "deduplicate_fragments": true,
+        "one_fragment_per_placeholder": true,
+        "distinct_values_for_repeated_placeholders": "when a placeholder (e.g. TECHNICAL_CAPABILITIES or MEASURABLE_IMPACT) appears more than once in a bullet group, select distinct fragments"
+      },
+      "rank_consistency_enforcement": "if assigned ranks would violate Top > Medium > Low seniority, re-order mappings so the higher-priority/seniority mapping takes the higher rank slot",
+      "prefer_posting_language_aliases": true
+    }
+  }
+}

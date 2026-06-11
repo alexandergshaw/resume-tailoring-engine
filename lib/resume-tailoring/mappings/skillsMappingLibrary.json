@@ -1,0 +1,1465 @@
+{
+  "skills_section_mapping_library": {
+    "version": "1.0",
+    "purpose": "Map job posting buzzwords to deterministic resume skills-section names, skill groups, and individual skills for tailored resume generation.",
+    "protected_rules": {
+      "never_insert_without_profile_evidence": [
+        "programming languages",
+        "frameworks",
+        "cloud platforms",
+        "databases",
+        "security tools",
+        "healthcare standards",
+        "certifications",
+        "LMS platforms",
+        "analytics tools"
+      ],
+      "allowed_to_generalize": [
+        "technical leadership",
+        "stakeholder communication",
+        "requirements gathering",
+        "troubleshooting",
+        "documentation",
+        "workflow improvement",
+        "application modernization",
+        "student mentoring",
+        "technical instruction",
+        "data analysis",
+        "systems analysis"
+      ],
+      "preserve_aliases_if_posting_uses_them": true
+    },
+    "mappings": [
+      {
+        "id": "software_engineering_core",
+        "buzzwords": [
+          "software engineer",
+          "software developer",
+          "application developer",
+          "application engineer",
+          "software development",
+          "application development",
+          "SDLC",
+          "debugging",
+          "programming",
+          "technical design",
+          "enterprise applications",
+          "application architecture"
+        ],
+        "skills_section_output": {
+          "section_name_options": [
+            "Software Engineering & Application Development",
+            "Application Engineering",
+            "Enterprise Software Development"
+          ],
+          "section_priority": 90,
+          "skill_groups": [
+            {
+              "group_name": "Core Engineering",
+              "skills": [
+                "Software Development",
+                "Application Development",
+                "Application Architecture",
+                "Technical Solution Design",
+                "Enterprise Applications",
+                "SDLC"
+              ]
+            },
+            {
+              "group_name": "Development Practices",
+              "skills": [
+                "Debugging",
+                "Troubleshooting",
+                "Code Reviews",
+                "Agile Development",
+                "Technical Documentation"
+              ]
+            },
+            {
+              "group_name": "Solution Delivery",
+              "skills": [
+                "Feature Development",
+                "Application Modernization",
+                "Workflow Improvement",
+                "Stakeholder Requirements"
+              ]
+            }
+          ],
+          "summary_capability_phrases": [
+            "enterprise application development",
+            "technical solution design",
+            "software delivery",
+            "application modernization"
+          ]
+        }
+      },
+      {
+        "id": "frontend_engineering",
+        "buzzwords": [
+          "frontend",
+          "front-end",
+          "front end",
+          "UI",
+          "user interface",
+          "web UI",
+          "React",
+          "React.js",
+          "JavaScript",
+          "TypeScript",
+          "HTML",
+          "HTML5",
+          "CSS",
+          "CSS3",
+          "SCSS",
+          "component library",
+          "design system",
+          "responsive design",
+          "single page application",
+          "SPA",
+          "accessibility"
+        ],
+        "skills_section_output": {
+          "section_name_options": [
+            "Frontend Engineering & Web Applications",
+            "React & Frontend Application Development",
+            "User Interface Engineering"
+          ],
+          "section_priority": 95,
+          "skill_groups": [
+            {
+              "group_name": "Frontend Technologies",
+              "skills": [
+                "React",
+                "JavaScript",
+                "TypeScript",
+                "HTML5",
+                "CSS3",
+                "SCSS"
+              ]
+            },
+            {
+              "group_name": "UI Engineering",
+              "skills": [
+                "Web Application Development",
+                "Reusable Component Libraries",
+                "Enterprise UI Development",
+                "Responsive Interfaces",
+                "Frontend Architecture"
+              ]
+            },
+            {
+              "group_name": "Quality & Maintainability",
+              "skills": [
+                "Code Reviews",
+                "Troubleshooting",
+                "Reusable UI Patterns",
+                "Application Modernization"
+              ]
+            }
+          ],
+          "summary_capability_phrases": [
+            "frontend application development",
+            "React-based web applications",
+            "reusable component libraries",
+            "enterprise UI modernization"
+          ]
+        }
+      },
+      {
+        "id": "backend_api_engineering",
+        "buzzwords": [
+          "backend",
+          "back-end",
+          "back end",
+          "server-side",
+          "API",
+          "REST API",
+          "RESTful",
+          "services",
+          "backend services",
+          "service layer",
+          "Spring Boot",
+          "Java",
+          "microservices",
+          "business logic",
+          "integration services"
+        ],
+        "skills_section_output": {
+          "section_name_options": [
+            "Backend Engineering & API Integration",
+            "API Development & Backend Services",
+            "Backend Application Engineering"
+          ],
+          "section_priority": 95,
+          "skill_groups": [
+            {
+              "group_name": "Backend Services",
+              "skills": [
+                "Backend Services",
+                "Service Layer Development",
+                "Business Logic Implementation",
+                "Application Services",
+                "Enterprise Backend Systems"
+              ]
+            },
+            {
+              "group_name": "APIs & Integrations",
+              "skills": [
+                "REST APIs",
+                "API Integrations",
+                "API-Based Architectures",
+                "Backend Integration Workflows",
+                "Systems Integration"
+              ]
+            },
+            {
+              "group_name": "Backend Technologies",
+              "skills": [
+                "Java",
+                "Spring Boot",
+                "SQL",
+                "PostgreSQL",
+                "Application Architecture"
+              ]
+            }
+          ],
+          "summary_capability_phrases": [
+            "backend service development",
+            "REST API integration",
+            "enterprise integration workflows",
+            "API-driven application architecture"
+          ]
+        }
+      },
+      {
+        "id": "full_stack_engineering",
+        "buzzwords": [
+          "full stack",
+          "full-stack",
+          "frontend and backend",
+          "end-to-end development",
+          "web application",
+          "application development",
+          "React",
+          "API",
+          "SQL",
+          "database",
+          "feature development"
+        ],
+        "skills_section_output": {
+          "section_name_options": [
+            "Full Stack Application Engineering",
+            "Full Stack Development",
+            "End-to-End Application Development"
+          ],
+          "section_priority": 100,
+          "skill_groups": [
+            {
+              "group_name": "Frontend",
+              "skills": [
+                "React",
+                "JavaScript",
+                "TypeScript",
+                "HTML5",
+                "CSS3",
+                "Web Application Development"
+              ]
+            },
+            {
+              "group_name": "Backend & APIs",
+              "skills": [
+                "REST APIs",
+                "Backend Services",
+                "API Integrations",
+                "Application Architecture"
+              ]
+            },
+            {
+              "group_name": "Data & Persistence",
+              "skills": [
+                "SQL",
+                "PostgreSQL",
+                "SQL Server",
+                "Database Development",
+                "SQL-Backed Workflows"
+              ]
+            }
+          ],
+          "summary_capability_phrases": [
+            "full-stack application development",
+            "end-to-end feature delivery",
+            "API-backed web applications",
+            "SQL-driven application workflows"
+          ]
+        }
+      },
+      {
+        "id": "api_systems_integration",
+        "buzzwords": [
+          "API integration",
+          "systems integration",
+          "enterprise integration",
+          "interoperability",
+          "data exchange",
+          "REST APIs",
+          "interfaces",
+          "middleware",
+          "backend integration",
+          "integration workflow",
+          "service integration",
+          "integration architecture"
+        ],
+        "skills_section_output": {
+          "section_name_options": [
+            "API Integration & Enterprise Systems",
+            "Systems Integration & Data Exchange",
+            "Enterprise Integration Architecture"
+          ],
+          "section_priority": 92,
+          "skill_groups": [
+            {
+              "group_name": "Integration",
+              "skills": [
+                "API Integrations",
+                "Systems Integration",
+                "Enterprise Integration Patterns",
+                "Backend Integration Workflows",
+                "Service Integration"
+              ]
+            },
+            {
+              "group_name": "APIs & Data Exchange",
+              "skills": [
+                "REST APIs",
+                "Data Exchange",
+                "Interoperability",
+                "API-Based Architectures"
+              ]
+            },
+            {
+              "group_name": "Enterprise Workflows",
+              "skills": [
+                "Workflow Automation",
+                "Data Transformation",
+                "Operational Workflows",
+                "Application Modernization"
+              ]
+            }
+          ],
+          "summary_capability_phrases": [
+            "API-based integration workflows",
+            "enterprise systems integration",
+            "data exchange architecture",
+            "backend integration workflows"
+          ]
+        }
+      },
+      {
+        "id": "database_sql",
+        "buzzwords": [
+          "SQL",
+          "database",
+          "relational database",
+          "PostgreSQL",
+          "Postgres",
+          "SQL Server",
+          "query",
+          "schema",
+          "data model",
+          "database development",
+          "reporting database",
+          "stored procedures",
+          "data access"
+        ],
+        "skills_section_output": {
+          "section_name_options": [
+            "Database Development & SQL Systems",
+            "SQL, Reporting & Data Workflows",
+            "Relational Data Systems"
+          ],
+          "section_priority": 90,
+          "skill_groups": [
+            {
+              "group_name": "Databases",
+              "skills": [
+                "SQL",
+                "PostgreSQL",
+                "SQL Server",
+                "Relational Databases",
+                "Database Development"
+              ]
+            },
+            {
+              "group_name": "Data Workflows",
+              "skills": [
+                "SQL-Backed Workflows",
+                "Data Transformation",
+                "Data Mapping",
+                "Data Access Workflows"
+              ]
+            },
+            {
+              "group_name": "Reporting",
+              "skills": [
+                "Operational Reporting",
+                "Enterprise Dashboards",
+                "Reporting Databases",
+                "Data Accessibility"
+              ]
+            }
+          ],
+          "summary_capability_phrases": [
+            "SQL-driven systems",
+            "database-supported applications",
+            "operational reporting",
+            "data-backed workflows"
+          ]
+        }
+      },
+      {
+        "id": "data_analysis_reporting",
+        "buzzwords": [
+          "data analyst",
+          "analytics",
+          "data analysis",
+          "reporting",
+          "dashboard",
+          "visualization",
+          "KPI",
+          "metrics",
+          "insights",
+          "trend analysis",
+          "Excel",
+          "spreadsheet",
+          "business intelligence",
+          "BI",
+          "operational reporting"
+        ],
+        "skills_section_output": {
+          "section_name_options": [
+            "Data Analysis, Reporting & Operational Insights",
+            "Analytics & Business Reporting",
+            "Data-Driven Decision Support"
+          ],
+          "section_priority": 88,
+          "skill_groups": [
+            {
+              "group_name": "Analysis",
+              "skills": [
+                "Data Analysis",
+                "Trend Analysis",
+                "Workflow Analysis",
+                "Business Metrics",
+                "KPI Analysis"
+              ]
+            },
+            {
+              "group_name": "Reporting",
+              "skills": [
+                "Operational Reporting",
+                "Dashboards",
+                "Data Visualization",
+                "Business Intelligence Support"
+              ]
+            },
+            {
+              "group_name": "Tools & Data Handling",
+              "skills": [
+                "SQL",
+                "Spreadsheets",
+                "Excel",
+                "Data Quality",
+                "Data Accessibility"
+              ]
+            }
+          ],
+          "summary_capability_phrases": [
+            "data analysis",
+            "operational reporting",
+            "dashboard development",
+            "business insight generation"
+          ]
+        }
+      },
+      {
+        "id": "business_systems_analysis",
+        "buzzwords": [
+          "business analyst",
+          "systems analyst",
+          "requirements",
+          "requirements gathering",
+          "business requirements",
+          "functional requirements",
+          "workflow analysis",
+          "process mapping",
+          "stakeholders",
+          "documentation",
+          "UAT",
+          "acceptance criteria",
+          "user stories",
+          "process improvement"
+        ],
+        "skills_section_output": {
+          "section_name_options": [
+            "Business Systems Analysis & Process Improvement",
+            "Requirements, Workflows & Stakeholder Analysis",
+            "Systems Analysis & Documentation"
+          ],
+          "section_priority": 92,
+          "skill_groups": [
+            {
+              "group_name": "Analysis",
+              "skills": [
+                "Business Systems Analysis",
+                "Systems Analysis",
+                "Workflow Analysis",
+                "Process Mapping",
+                "Process Improvement"
+              ]
+            },
+            {
+              "group_name": "Requirements",
+              "skills": [
+                "Requirements Gathering",
+                "Business Requirements",
+                "Functional Requirements",
+                "User Stories",
+                "Acceptance Criteria"
+              ]
+            },
+            {
+              "group_name": "Validation & Communication",
+              "skills": [
+                "UAT Support",
+                "Technical Documentation",
+                "Stakeholder Communication",
+                "Cross-Functional Collaboration"
+              ]
+            }
+          ],
+          "summary_capability_phrases": [
+            "requirements gathering",
+            "business systems analysis",
+            "workflow documentation",
+            "stakeholder communication"
+          ]
+        }
+      },
+      {
+        "id": "technical_leadership",
+        "buzzwords": [
+          "technical lead",
+          "team lead",
+          "leadership",
+          "mentor",
+          "mentorship",
+          "code review",
+          "architecture",
+          "technical direction",
+          "engineering leadership",
+          "cross-functional",
+          "stakeholder alignment",
+          "delivery coordination",
+          "solution design",
+          "peer review"
+        ],
+        "skills_section_output": {
+          "section_name_options": [
+            "Technical Leadership, Delivery & Collaboration",
+            "Engineering Leadership & Mentorship",
+            "Technical Direction & Team Enablement"
+          ],
+          "section_priority": 96,
+          "skill_groups": [
+            {
+              "group_name": "Technical Leadership",
+              "skills": [
+                "Technical Leadership",
+                "Technical Direction",
+                "Architecture Ownership",
+                "Technical Solution Design",
+                "Code Review Governance"
+              ]
+            },
+            {
+              "group_name": "Team Enablement",
+              "skills": [
+                "Developer Mentorship",
+                "Peer Reviews",
+                "Team Coaching",
+                "Engineering Standards",
+                "Knowledge Transfer"
+              ]
+            },
+            {
+              "group_name": "Collaboration",
+              "skills": [
+                "Cross-Functional Collaboration",
+                "Stakeholder Alignment",
+                "Delivery Coordination",
+                "Technical Communication"
+              ]
+            }
+          ],
+          "summary_capability_phrases": [
+            "technical leadership",
+            "developer mentorship",
+            "architecture ownership",
+            "cross-functional delivery coordination"
+          ]
+        }
+      },
+      {
+        "id": "management_delivery",
+        "buzzwords": [
+          "manager",
+          "management",
+          "delivery manager",
+          "project management",
+          "program management",
+          "roadmap",
+          "planning",
+          "prioritization",
+          "resource planning",
+          "stakeholder management",
+          "status reporting",
+          "delivery oversight",
+          "team coordination"
+        ],
+        "skills_section_output": {
+          "section_name_options": [
+            "Leadership, Project Delivery & Stakeholder Management",
+            "Technology Delivery & Team Coordination",
+            "Management, Planning & Execution"
+          ],
+          "section_priority": 92,
+          "skill_groups": [
+            {
+              "group_name": "Delivery Management",
+              "skills": [
+                "Project Management",
+                "Program Coordination",
+                "Delivery Oversight",
+                "Roadmap Support",
+                "Prioritization"
+              ]
+            },
+            {
+              "group_name": "Team Coordination",
+              "skills": [
+                "Team Coordination",
+                "Resource Planning",
+                "Process Improvement",
+                "Status Reporting",
+                "Execution Support"
+              ]
+            },
+            {
+              "group_name": "Stakeholder Management",
+              "skills": [
+                "Stakeholder Management",
+                "Stakeholder Communication",
+                "Cross-Functional Collaboration",
+                "Risk and Dependency Communication"
+              ]
+            }
+          ],
+          "summary_capability_phrases": [
+            "technical delivery coordination",
+            "stakeholder management",
+            "team coordination",
+            "process improvement"
+          ]
+        }
+      },
+      {
+        "id": "agile_scrum_delivery",
+        "buzzwords": [
+          "Agile",
+          "Scrum",
+          "Kanban",
+          "sprint",
+          "backlog",
+          "user stories",
+          "acceptance criteria",
+          "Jira",
+          "retrospective",
+          "planning",
+          "iteration",
+          "ceremonies",
+          "product backlog",
+          "Agile delivery"
+        ],
+        "skills_section_output": {
+          "section_name_options": [
+            "Agile Delivery & Project Execution",
+            "Scrum, Backlog & Agile Collaboration",
+            "Agile Planning & Delivery Practices"
+          ],
+          "section_priority": 85,
+          "skill_groups": [
+            {
+              "group_name": "Agile Practices",
+              "skills": [
+                "Agile Development",
+                "Scrum Collaboration",
+                "Kanban",
+                "Sprint Planning",
+                "Retrospectives"
+              ]
+            },
+            {
+              "group_name": "Backlog & Requirements",
+              "skills": [
+                "Backlog Support",
+                "User Stories",
+                "Acceptance Criteria",
+                "Product Backlog",
+                "Requirements Translation"
+              ]
+            },
+            {
+              "group_name": "Delivery Tools",
+              "skills": [
+                "Jira",
+                "Delivery Tracking",
+                "Iteration Planning",
+                "Cross-Functional Coordination"
+              ]
+            }
+          ],
+          "summary_capability_phrases": [
+            "Agile delivery",
+            "backlog execution",
+            "user story development",
+            "cross-functional sprint coordination"
+          ]
+        }
+      },
+      {
+        "id": "healthcare_integration",
+        "buzzwords": [
+          "healthcare",
+          "health care",
+          "payer",
+          "provider",
+          "claims",
+          "member",
+          "eligibility",
+          "FHIR",
+          "HL7",
+          "CCD",
+          "C-CDA",
+          "interoperability",
+          "health data exchange",
+          "clinical data",
+          "healthcare data",
+          "regulated environment",
+          "HIPAA"
+        ],
+        "skills_section_output": {
+          "section_name_options": [
+            "Healthcare Interoperability & Enterprise Integration",
+            "Healthcare Data Exchange & Payer Workflows",
+            "Healthcare Systems Integration"
+          ],
+          "section_priority": 100,
+          "skill_groups": [
+            {
+              "group_name": "Healthcare Domain",
+              "skills": [
+                "Healthcare Interoperability",
+                "Healthcare Data Exchange",
+                "Payer Workflows",
+                "Member Data Workflows",
+                "Regulated Healthcare Environments"
+              ]
+            },
+            {
+              "group_name": "Standards & Data",
+              "skills": [
+                "FHIR",
+                "HL7",
+                "CCD",
+                "C-CDA",
+                "Healthcare Data Mapping"
+              ]
+            },
+            {
+              "group_name": "Integration",
+              "skills": [
+                "Enterprise Integration",
+                "API-Based Architectures",
+                "Systems Integration",
+                "Backend Integration Workflows",
+                "Data Transformation"
+              ]
+            }
+          ],
+          "summary_capability_phrases": [
+            "healthcare integration workflows",
+            "healthcare data exchange",
+            "payer workflow support",
+            "regulated enterprise systems"
+          ]
+        }
+      },
+      {
+        "id": "cloud_platform",
+        "buzzwords": [
+          "cloud",
+          "AWS",
+          "Azure",
+          "GCP",
+          "cloud infrastructure",
+          "infrastructure",
+          "platform",
+          "cloud platform",
+          "deployment",
+          "container",
+          "Docker",
+          "Kubernetes",
+          "scalability",
+          "cloud services",
+          "infrastructure automation"
+        ],
+        "skills_section_output": {
+          "section_name_options": [
+            "Cloud, Infrastructure & Platform Engineering",
+            "Cloud Application Delivery",
+            "Platform & Infrastructure Modernization"
+          ],
+          "section_priority": 90,
+          "skill_groups": [
+            {
+              "group_name": "Cloud & Infrastructure",
+              "skills": [
+                "Cloud Infrastructure",
+                "AWS",
+                "Azure",
+                "GCP",
+                "Application Infrastructure",
+                "Infrastructure Automation"
+              ]
+            },
+            {
+              "group_name": "Platforms",
+              "skills": [
+                "Platform Engineering",
+                "Enterprise Platforms",
+                "Cloud-Aligned Application Delivery",
+                "Scalable Platforms"
+              ]
+            },
+            {
+              "group_name": "Deployment",
+              "skills": [
+                "Deployment Coordination",
+                "Docker",
+                "Kubernetes",
+                "Release Support",
+                "Environment Management"
+              ]
+            }
+          ],
+          "summary_capability_phrases": [
+            "cloud application delivery",
+            "platform engineering",
+            "deployment coordination",
+            "cloud-aligned modernization"
+          ]
+        }
+      },
+      {
+        "id": "devops_cicd",
+        "buzzwords": [
+          "DevOps",
+          "CI/CD",
+          "continuous integration",
+          "continuous deployment",
+          "pipeline",
+          "Jenkins",
+          "GitHub Actions",
+          "deployment automation",
+          "release management",
+          "build pipeline",
+          "artifact",
+          "environment management",
+          "automation",
+          "release"
+        ],
+        "skills_section_output": {
+          "section_name_options": [
+            "DevOps, CI/CD & Delivery Automation",
+            "Application Delivery Automation",
+            "Release, Deployment & Pipeline Support"
+          ],
+          "section_priority": 90,
+          "skill_groups": [
+            {
+              "group_name": "CI/CD",
+              "skills": [
+                "CI/CD",
+                "Continuous Integration",
+                "Continuous Deployment",
+                "Build Pipelines",
+                "GitHub Actions",
+                "Jenkins"
+              ]
+            },
+            {
+              "group_name": "Release & Deployment",
+              "skills": [
+                "Deployment Coordination",
+                "Release Support",
+                "Release Management",
+                "Environment Management"
+              ]
+            },
+            {
+              "group_name": "Automation",
+              "skills": [
+                "Workflow Automation",
+                "Delivery Automation",
+                "DevOps Practices",
+                "Pipeline Support"
+              ]
+            }
+          ],
+          "summary_capability_phrases": [
+            "CI/CD workflow support",
+            "deployment automation",
+            "release coordination",
+            "application delivery automation"
+          ]
+        }
+      },
+      {
+        "id": "cybersecurity",
+        "buzzwords": [
+          "cybersecurity",
+          "security",
+          "secure development",
+          "application security",
+          "risk",
+          "vulnerability",
+          "threat",
+          "access control",
+          "authentication",
+          "authorization",
+          "compliance",
+          "security controls",
+          "incident",
+          "ethical hacking",
+          "secure systems"
+        ],
+        "skills_section_output": {
+          "section_name_options": [
+            "Cybersecurity, Secure Systems & Risk Awareness",
+            "Application Security & Risk-Aware Development",
+            "Secure Systems Fundamentals"
+          ],
+          "section_priority": 85,
+          "skill_groups": [
+            {
+              "group_name": "Security Concepts",
+              "skills": [
+                "Cybersecurity Fundamentals",
+                "Secure Development",
+                "Application Security",
+                "Risk Awareness",
+                "Security Controls"
+              ]
+            },
+            {
+              "group_name": "Access & Compliance",
+              "skills": [
+                "Access Control",
+                "Authentication",
+                "Authorization",
+                "Compliance-Oriented Environments",
+                "Regulated Systems"
+              ]
+            },
+            {
+              "group_name": "Security Education",
+              "skills": [
+                "Cybersecurity Instruction",
+                "Ethical Hacking Concepts",
+                "Threat Awareness",
+                "Secure Systems Training"
+              ]
+            }
+          ],
+          "summary_capability_phrases": [
+            "secure development awareness",
+            "application security fundamentals",
+            "risk-aware technical design",
+            "cybersecurity instruction"
+          ]
+        }
+      },
+      {
+        "id": "education_instruction",
+        "buzzwords": [
+          "instructor",
+          "teacher",
+          "faculty",
+          "adjunct",
+          "education",
+          "teaching",
+          "training",
+          "student",
+          "student support",
+          "academic support",
+          "curriculum",
+          "course design",
+          "online instruction",
+          "LMS",
+          "learning management system",
+          "mentoring",
+          "technical training"
+        ],
+        "skills_section_output": {
+          "section_name_options": [
+            "Education, Instruction & Student Support",
+            "Technical Instruction & Learning Support",
+            "Teaching, Mentoring & Academic Support"
+          ],
+          "section_priority": 100,
+          "skill_groups": [
+            {
+              "group_name": "Instruction",
+              "skills": [
+                "Technical Instruction",
+                "Online Teaching",
+                "Technical Training",
+                "Discussion Leadership",
+                "Applied Learning"
+              ]
+            },
+            {
+              "group_name": "Student Support",
+              "skills": [
+                "Student Mentoring",
+                "Academic Support",
+                "Student Engagement",
+                "Timely Feedback",
+                "Academic Coaching"
+              ]
+            },
+            {
+              "group_name": "Learning Platforms",
+              "skills": [
+                "Learning Management Systems",
+                "Online Education Platforms",
+                "Zoom",
+                "Microsoft Teams",
+                "Google Workspace"
+              ]
+            }
+          ],
+          "summary_capability_phrases": [
+            "technical instruction",
+            "online teaching",
+            "student mentoring",
+            "project-based learning"
+          ]
+        }
+      },
+      {
+        "id": "curriculum_design",
+        "buzzwords": [
+          "curriculum",
+          "course development",
+          "instructional design",
+          "lesson planning",
+          "assessment",
+          "rubric",
+          "learning objectives",
+          "course outcomes",
+          "project-based learning",
+          "student learning",
+          "instructional materials",
+          "learning experience"
+        ],
+        "skills_section_output": {
+          "section_name_options": [
+            "Curriculum Design & Learning Experience Development",
+            "Course Development & Assessment Design",
+            "Instructional Design for Technical Education"
+          ],
+          "section_priority": 95,
+          "skill_groups": [
+            {
+              "group_name": "Course Design",
+              "skills": [
+                "Curriculum Development",
+                "Course Development",
+                "Instructional Design",
+                "Learning Objectives",
+                "Course Outcomes"
+              ]
+            },
+            {
+              "group_name": "Assessment",
+              "skills": [
+                "Assessment Design",
+                "Rubric Development",
+                "Project-Based Assignments",
+                "Student Learning Evaluation"
+              ]
+            },
+            {
+              "group_name": "Instructional Materials",
+              "skills": [
+                "Instructional Materials",
+                "Technical Training Materials",
+                "Applied Learning Activities",
+                "Learning Experience Design"
+              ]
+            }
+          ],
+          "summary_capability_phrases": [
+            "curriculum development",
+            "instructional design",
+            "assessment design",
+            "learning objective alignment"
+          ]
+        }
+      },
+      {
+        "id": "it_support_systems",
+        "buzzwords": [
+          "IT support",
+          "technical support",
+          "systems administration",
+          "system administrator",
+          "help desk",
+          "desktop support",
+          "support tickets",
+          "troubleshooting",
+          "Windows",
+          "Linux",
+          "command line",
+          "user support",
+          "technical assistance",
+          "service desk"
+        ],
+        "skills_section_output": {
+          "section_name_options": [
+            "IT Support, Systems & Troubleshooting",
+            "Technical Support & Systems Assistance",
+            "User Support & Systems Fundamentals"
+          ],
+          "section_priority": 82,
+          "skill_groups": [
+            {
+              "group_name": "Support",
+              "skills": [
+                "Technical Support",
+                "IT Support",
+                "User Support",
+                "Service Desk Support",
+                "Remote Support"
+              ]
+            },
+            {
+              "group_name": "Systems",
+              "skills": [
+                "Systems Administration Fundamentals",
+                "Linux Command Line",
+                "Windows Support",
+                "Enterprise Systems",
+                "Application Support"
+              ]
+            },
+            {
+              "group_name": "Troubleshooting",
+              "skills": [
+                "Troubleshooting",
+                "Issue Diagnosis",
+                "Technical Documentation",
+                "Problem Solving"
+              ]
+            }
+          ],
+          "summary_capability_phrases": [
+            "technical support",
+            "systems troubleshooting",
+            "user assistance",
+            "technical documentation"
+          ]
+        }
+      },
+      {
+        "id": "platform_engineering",
+        "buzzwords": [
+          "platform",
+          "platform engineering",
+          "internal platform",
+          "developer platform",
+          "internal tools",
+          "shared services",
+          "reusable components",
+          "enablement",
+          "developer experience",
+          "self-service",
+          "standardization",
+          "engineering productivity"
+        ],
+        "skills_section_output": {
+          "section_name_options": [
+            "Platform Engineering & Developer Enablement",
+            "Internal Platforms & Engineering Productivity",
+            "Reusable Architecture & Developer Experience"
+          ],
+          "section_priority": 93,
+          "skill_groups": [
+            {
+              "group_name": "Platform Engineering",
+              "skills": [
+                "Platform Engineering",
+                "Internal Platforms",
+                "Developer Enablement",
+                "Developer Experience",
+                "Shared Services"
+              ]
+            },
+            {
+              "group_name": "Reusable Systems",
+              "skills": [
+                "Reusable Architecture",
+                "Reusable Component Libraries",
+                "Standardized Workflows",
+                "Self-Service Patterns"
+              ]
+            },
+            {
+              "group_name": "Productivity",
+              "skills": [
+                "Engineering Productivity",
+                "Workflow Automation",
+                "Application Setup Standardization",
+                "Delivery Acceleration"
+              ]
+            }
+          ],
+          "summary_capability_phrases": [
+            "platform engineering",
+            "developer enablement",
+            "internal tools development",
+            "reusable architecture"
+          ]
+        }
+      },
+      {
+        "id": "solutions_architecture",
+        "buzzwords": [
+          "solutions architect",
+          "solution architecture",
+          "technical architecture",
+          "architecture",
+          "technical strategy",
+          "system design",
+          "enterprise architecture",
+          "application architecture",
+          "integration architecture",
+          "scalable architecture",
+          "solution design"
+        ],
+        "skills_section_output": {
+          "section_name_options": [
+            "Solution Architecture & Technical Design",
+            "Application Architecture & Systems Design",
+            "Enterprise Architecture & Integration Design"
+          ],
+          "section_priority": 95,
+          "skill_groups": [
+            {
+              "group_name": "Architecture",
+              "skills": [
+                "Solution Architecture",
+                "Application Architecture",
+                "Technical Architecture",
+                "System Design",
+                "Scalable Architecture"
+              ]
+            },
+            {
+              "group_name": "Solution Design",
+              "skills": [
+                "Technical Solution Design",
+                "Enterprise Systems Design",
+                "Integration Architecture",
+                "Platform Design"
+              ]
+            },
+            {
+              "group_name": "Strategy & Alignment",
+              "skills": [
+                "Technical Strategy",
+                "Stakeholder Alignment",
+                "Architecture Ownership",
+                "Modernization Planning"
+              ]
+            }
+          ],
+          "summary_capability_phrases": [
+            "solution architecture",
+            "technical solution design",
+            "application architecture",
+            "enterprise systems design"
+          ]
+        }
+      },
+      {
+        "id": "documentation_communication",
+        "buzzwords": [
+          "documentation",
+          "technical documentation",
+          "process documentation",
+          "knowledge base",
+          "training materials",
+          "requirements documentation",
+          "written communication",
+          "presentations",
+          "stakeholder communication",
+          "status updates",
+          "SOP",
+          "runbook"
+        ],
+        "skills_section_output": {
+          "section_name_options": [
+            "Technical Communication & Documentation",
+            "Documentation, Knowledge Transfer & Stakeholder Communication",
+            "Technical Writing & Process Documentation"
+          ],
+          "section_priority": 78,
+          "skill_groups": [
+            {
+              "group_name": "Documentation",
+              "skills": [
+                "Technical Documentation",
+                "Process Documentation",
+                "Requirements Documentation",
+                "Knowledge Base Content",
+                "Runbooks"
+              ]
+            },
+            {
+              "group_name": "Communication",
+              "skills": [
+                "Stakeholder Communication",
+                "Written Communication",
+                "Status Updates",
+                "Presentations",
+                "Cross-Functional Communication"
+              ]
+            },
+            {
+              "group_name": "Knowledge Transfer",
+              "skills": [
+                "Training Materials",
+                "Knowledge Transfer",
+                "Technical Guidance",
+                "Instructional Materials"
+              ]
+            }
+          ],
+          "summary_capability_phrases": [
+            "technical documentation",
+            "process documentation",
+            "knowledge transfer",
+            "stakeholder communication"
+          ]
+        }
+      },
+      {
+        "id": "collaboration_tools",
+        "buzzwords": [
+          "Git",
+          "GitHub",
+          "Jira",
+          "Microsoft Teams",
+          "Zoom",
+          "Google Workspace",
+          "collaboration tools",
+          "version control",
+          "source control",
+          "ticketing",
+          "project tracking",
+          "remote collaboration"
+        ],
+        "skills_section_output": {
+          "section_name_options": [
+            "Development, Collaboration & Productivity Tools",
+            "Collaboration Platforms & Delivery Tools",
+            "Technical Tools & Team Platforms"
+          ],
+          "section_priority": 65,
+          "skill_groups": [
+            {
+              "group_name": "Source Control",
+              "skills": [
+                "Git",
+                "GitHub",
+                "Version Control",
+                "Source Control"
+              ]
+            },
+            {
+              "group_name": "Project Tracking",
+              "skills": [
+                "Jira",
+                "Ticketing Workflows",
+                "Project Tracking",
+                "Backlog Visibility"
+              ]
+            },
+            {
+              "group_name": "Collaboration Platforms",
+              "skills": [
+                "Microsoft Teams",
+                "Zoom",
+                "Google Workspace",
+                "Remote Collaboration"
+              ]
+            }
+          ],
+          "summary_capability_phrases": [
+            "version control workflows",
+            "project tracking",
+            "remote collaboration",
+            "team communication platforms"
+          ]
+        }
+      }
+    ],
+    "selection_logic": {
+      "score_formula": {
+        "exact_buzzword_match": 5,
+        "alias_match": 3,
+        "job_title_match": 6,
+        "required_skill_match": 8,
+        "preferred_skill_match": 4,
+        "resume_evidence_match": 6,
+        "domain_match": 4,
+        "protected_claim_conflict": -100
+      },
+      "minimum_score_to_activate_mapping": 10,
+      "max_active_skill_sections": 5,
+      "max_groups_per_section": 3,
+      "max_skills_per_group": 8,
+      "deduplicate_skills": true,
+      "prefer_posting_language_aliases": true,
+      "section_order_rules": [
+        "place highest scoring mapping first",
+        "place direct required-skill mappings before supporting mappings",
+        "combine low-priority tool mappings into final supporting section",
+        "remove empty groups",
+        "remove empty sections"
+      ]
+    }
+  }
+}
